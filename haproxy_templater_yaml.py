@@ -108,6 +108,7 @@ def config(reload:bool=typer.Option(False, help="Generate, test and reload the c
             yaml_db_www_site_list=yaml_db_www_site_list,
             ssl_folder_empty=ssl_folder_empty,
             yaml_db_backend_servers=yaml_db_backend_servers,
+            yaml_db=yaml_db,
             )
         
         print(template)
