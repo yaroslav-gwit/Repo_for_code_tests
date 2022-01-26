@@ -4,7 +4,6 @@ sites:
     active: yes
     cert_type: certbot
     www_redirection: yes
-    https_redirection: yes
     owner: Yaroslav Koisa
     real_ip_header: x-real-ip
     backend_servers:
@@ -27,5 +26,27 @@ sites:
     real_ip_header: x-real-ip
     backend_servers:
     - backend_server_address: 192.168.1.1:90
+      backend_server_http2: no
+      backend_server_https: no
+
+  - site_name: mraz.gateway-it.com
+    active: yes
+    cert_type: selfsigned
+    www_redirection: yes
+    owner: Yaroslav Koisa
+    real_ip_header: x-real-ip
+    backend_servers:
+    - backend_server_address: 192.168.1.2:90
+      backend_server_http2: no
+      backend_server_https: no
+
+  - site_name: trururu.gateway-it.com
+    active: yes
+    cert_type: selfsigned
+    www_redirection: yes
+    owner: Yaroslav Koisa
+    real_ip_header: x-real-ip
+    backend_servers:
+    - backend_server_address: 192.168.1.2:90
       backend_server_http2: no
       backend_server_https: no

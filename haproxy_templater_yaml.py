@@ -70,7 +70,7 @@ class JinjaReadWrite:
 @app.command()
 def config(reload:bool=typer.Option(False, help="Generate, test and reload the config"), \
     generate:bool=typer.Option(False, help="Only generate new config (used for troubleshooting)"), \
-    test:bool=typer.Option(False, help="Only generate new config (used for troubleshooting)"), \
+    test:bool=typer.Option(False, help="Generate and test the new config (used for troubleshooting)"), \
     show:bool=typer.Option(False, help="Print out the latest config"), \
         ):
     
@@ -86,30 +86,13 @@ def config(reload:bool=typer.Option(False, help="Generate, test and reload the c
         yaml_db = YamlFileManipulations().read()
         template = Template(JinjaReadWrite().read())
 
-        if len(os.listdir("/ssl/")) == 0:
-            ssl_folder_empty = True
+        if os.path.exists("/ssl/"):
+            if len(os.listdir("/ssl/")) != 0:
+                ssl_folder_not_empty = True
         else:
-            ssl_folder_empty = False
+            ssl_folder_not_empty = False
         
-        yaml_db_site_list = []
-        yaml_db_www_site_list = []
-        yaml_db_backend_servers = []
-
-        for item in range(0, len(yaml_db["sites"])):
-            yaml_db_site_list.append(yaml_db["sites"][item]["site_name"])
-            
-            if yaml_db["sites"][item]["www_redirection"]:
-                yaml_db_www_site_list.append(yaml_db["sites"][item]["site_name"])
-            
-            for backend_servers_list in yaml_db["sites"][item]["backend_servers"]:
-                yaml_db_backend_servers.append(backend_servers_list)
-        
-        template = template.render(yaml_db_site_list=yaml_db_site_list,
-            yaml_db_www_site_list=yaml_db_www_site_list,
-            ssl_folder_empty=ssl_folder_empty,
-            yaml_db_backend_servers=yaml_db_backend_servers,
-            yaml_db=yaml_db,
-            )
+        template = template.render(ssl_folder_not_empty=ssl_folder_not_empty, yaml_db=yaml_db)
         
         print(template)
 
