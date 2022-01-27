@@ -3,10 +3,12 @@ from jinja2 import Template
 import typer
 import yaml
 import os
+import logging
+import syslog
 
 
 haproxy_site_db_location = "haproxy_site_db.yml"
-haproxy_config_template_location = "haproxy_config_template_yaml.cfg"
+haproxy_config_template_location = "haproxy_config_template_yaml.cfg1"
 haproxy_config_location = "haproxy_yaml.cfg"
 
 
@@ -69,7 +71,12 @@ class JinjaReadWrite:
 
     def __init__(self, haproxy_config_template = haproxy_config_template_location):
         self.haproxy_config_template = haproxy_config_template
-    
+        if not os.path.exists(self.haproxy_config_template):
+            message_ = "Template file doesn't exist!"
+            logging.critical(message_)
+            syslog.syslog(syslog.LOG_CRIT, message_)
+            exit(118)
+
     def read(self):
         with open(self.haproxy_config_template, 'r') as file:
             haproxy_config_template = file.read()
