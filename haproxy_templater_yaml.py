@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 from jinja2 import Template
 import typer
-from os.path import exists
 import yaml
 import os
 
