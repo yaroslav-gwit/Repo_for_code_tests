@@ -8,7 +8,7 @@ import syslog
 
 
 haproxy_site_db_location = "haproxy_site_db.yml"
-haproxy_config_template_location = "haproxy_config_template_yaml.cfg1"
+haproxy_config_template_location = "haproxy_config_template_yaml.cfg"
 haproxy_config_location = "haproxy_yaml.cfg"
 
 
@@ -65,6 +65,64 @@ class YamlFileManipulations:
 class SSLCerts:
     """This class is responsible for dealing with SSL certificates"""
 
+    def __init__(self, frontend_adress = False, www_redirect = False):
+        self.frontend_adress = frontend_adress
+        self.www_redirect = www_redirect
+    
+
+    def new_cert_from_le(self):
+        if not self.frontend_adress:
+            message_ = "There was no frontend address set!"
+            logging.critical(message_)
+            syslog.syslog(syslog.LOG_CRIT, message_)
+            exit(117)
+
+        command = "certbot certonly --standalone -d " + self.frontend_adress + " --non-interactive --agree-tos --email=slv@yari.pw --http-01-port=8888"
+        subprocess.run(command, shell=True, stdout=None)
+
+        command = "cat /etc/letsencrypt/live/" + self.frontend_adress + "/fullchain.pem /etc/letsencrypt/live/" + self.frontend_adress + "/privkey.pem > /ssl/" + self.frontend_adress + ".pem"
+        subprocess.run(command, shell=True, stdout=None)
+
+        if self.www_redirect:
+            command = "certbot certonly --standalone -d www." + self.frontend_adress + " --non-interactive --agree-tos --email=slv@yari.pw --http-01-port=8888"
+            subprocess.run(command, shell=True, stdout=None)
+
+            command = "cat /etc/letsencrypt/live/www." + self.frontend_adress + "/fullchain.pem /etc/letsencrypt/live/www." + self.frontend_adress + "/privkey.pem > /ssl/www." + self.frontend_adress + ".pem"
+            subprocess.run(command, shell=True, stdout=None)
+
+        # Generate new HAProxy config
+        # Create SSL check here
+        # Create config check here
+        # Reload the HAProxy Service here
+
+        status = ("Success", "Failure")
+
+        return status
+
+
+    def create_self_signed(self):
+        return self
+    
+    def retire_cert(self):
+        # Copy the old cert to "archive" folder before renewal
+        return self
+    
+    def renew_cert(self):
+        # Call test_cert function to determine if renewal is needed
+        # Call retire function
+        # Call new_cert function
+        # Return status
+        return self
+
+    def test_cert(self):
+        # Check if cert exists
+        # Check the date on cert
+        # Return status
+        return self
+    
+    def check_if_exist(self):
+        return self
+
 
 class JinjaReadWrite:
     """This class is responsible for Jinja2 template file handling"""
@@ -120,6 +178,18 @@ def site_db(add:bool=typer.Option(False, help="Generate, test and reload the con
     if show:
         yaml_db = yaml.dump(YamlFileManipulations().read(), sort_keys=False)
         print(yaml_db)
+
+
+@app.command()
+def certificate(add:bool=typer.Option(False, help="Generate, test and reload the config"), \
+    remove:bool=typer.Option(False, help="Only generate new config (used for troubleshooting)"), \
+    update:bool=typer.Option(False, help="Only generate new config (used for troubleshooting)"), \
+    show:bool=typer.Option(False, help="Print out the latest config"), \
+        ):
+
+    '''
+    Example: program 
+    '''
 
 
 if __name__ == "__main__":
