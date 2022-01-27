@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.10
 from jinja2 import Template
 import typer
 import yaml
@@ -66,7 +66,7 @@ class YamlFileManipulations:
 class SSLCerts:
     """This class is responsible for dealing with SSL certificates"""
 
-    def __init__(self, frontend_adress = False, www_redirect = False):
+    def __init__(self, frontend_adress = False, www_redirect:bool = False):
         self.frontend_adress = frontend_adress
         self.www_redirect = www_redirect
     
@@ -75,12 +75,13 @@ class SSLCerts:
         if not self.frontend_adress:
             message_ = "There was no frontend address set!"
             logging.critical(message_)
-            syslog.syslog(syslog.LOG_CRIT, message_)
+            syslog.syslog(syslog.LOG_CRIT, "CRITICAL ERROR! " + message_)
             sys.exit(117)
 
         command = "certbot certonly --standalone -d " + self.frontend_adress + " --non-interactive --agree-tos --email=slv@yari.pw --http-01-port=8888"
         subprocess.run(command, shell=True, stdout=None)
-
+        # Create SSL check here
+        # Copy over new certificates if the operation was successfull
         command = "cat /etc/letsencrypt/live/" + self.frontend_adress + "/fullchain.pem /etc/letsencrypt/live/" + self.frontend_adress + "/privkey.pem > /ssl/" + self.frontend_adress + ".pem"
         subprocess.run(command, shell=True, stdout=None)
 
@@ -88,16 +89,13 @@ class SSLCerts:
             command = "certbot certonly --standalone -d www." + self.frontend_adress + " --non-interactive --agree-tos --email=slv@yari.pw --http-01-port=8888"
             subprocess.run(command, shell=True, stdout=None)
 
+            # Create SSL check here
+            # Copy over new certificates if the operation was successfull
+
             command = "cat /etc/letsencrypt/live/www." + self.frontend_adress + "/fullchain.pem /etc/letsencrypt/live/www." + self.frontend_adress + "/privkey.pem > /ssl/www." + self.frontend_adress + ".pem"
             subprocess.run(command, shell=True, stdout=None)
 
-        # Generate new HAProxy config
-        # Create SSL check here
-        # Create config check here
-        # Reload the HAProxy Service here
-
         status = ("Success", "Failure")
-
         return status
 
 
@@ -133,7 +131,7 @@ class JinjaReadWrite:
         if not os.path.exists(self.haproxy_config_template):
             message_ = "Template file doesn't exist!"
             logging.critical(message_)
-            syslog.syslog(syslog.LOG_CRIT, message_)
+            syslog.syslog(syslog.LOG_CRIT, "CRITICAL ERROR! " + message_)
             sys.exit(118)
 
     def read(self):
@@ -156,25 +154,43 @@ def config(reload:bool=typer.Option(False, help="Generate, test and reload the c
     if (reload and generate) or (reload and test) or (generate and test):
         print("You can't use these options together!")
         sys.exit(120)
+    elif not (reload or generate or test or show):
+        logging.error("You have to choose at least 1 parameter! Use --help option to find the approptiate flags.")
+        sys.exit(116)
 
     if show:
         print(ConfigOptions().generate())
 
 
 @app.command()
-def site_db(add:bool=typer.Option(False, help="Generate, test and reload the config"), \
-    remove:bool=typer.Option(False, help="Only generate new config (used for troubleshooting)"), \
-    update:bool=typer.Option(False, help="Only generate new config (used for troubleshooting)"), \
+def site_db(add:str=typer.Argument("", help="Generate, test and reload the config"), \
+    site_address:str=typer.Option("", help="Only generate new config (used for troubleshooting)"), \
+    owner:str=typer.Option("", help="Only generate new config (used for troubleshooting)"), \
+    backend_servers:str=typer.Option("", help="Only generate new config (used for troubleshooting)"), \
+    backend_http2:bool=typer.Option(False, help="Only generate new config (used for troubleshooting)"), \
+    backend_https:bool=typer.Option(False, help="Only generate new config (used for troubleshooting)"), \
+    www_redirection:bool=typer.Option(False, help="Only generate new config (used for troubleshooting)"), \
+    x_realip:bool=typer.Option(False, help="Only generate new config (used for troubleshooting)"), \
+    remove:str=typer.Argument("", help="Only generate new config (used for troubleshooting)"), \
+    update:str=typer.Argument("", help="Only generate new config (used for troubleshooting)"), \
     show:bool=typer.Option(False, help="Print out the latest config"), \
         ):
 
     '''
     Example: program 
     '''
+    
 
     if (add and remove) or (add and update) or (remove and update):
-        print("You can't use these options together!")
+        logging.error("You can't use these options together!")
         sys.exit(120)
+    elif not (add or remove or update or show):
+        logging.error("You have to choose at least 1 parameter! Use --help option to find the approptiate flags.")
+        sys.exit(116)
+
+    if add:
+        print("Works!")
+        exit(0)
 
     if show:
         yaml_db = yaml.dump(YamlFileManipulations().read(), sort_keys=False)
@@ -182,16 +198,19 @@ def site_db(add:bool=typer.Option(False, help="Generate, test and reload the con
 
 
 @app.command()
-def certificate(add:bool=typer.Option(False, help="Generate, test and reload the config"), \
-    remove:bool=typer.Option(False, help="Only generate new config (used for troubleshooting)"), \
-    update:bool=typer.Option(False, help="Only generate new config (used for troubleshooting)"), \
-    show:bool=typer.Option(False, help="Print out the latest config"), \
+def certificate(request:str=typer.Option("", help="Request a new certificate from LetsEncrypt and copy it over to /ssl/ folder"), \
+    self_signed:str=typer.Option("", help="Generate a new self signed certificate and copy it over to /ssl/ folder"), \
+    renew:str=typer.Option("", help="Renews the certificate for a given site name"), \
+    test:str=typer.Option("", help="Test a given certificate for validity"), \
         ):
 
     '''
     Example: program 
     '''
-
+    
+    if not (request or self_signed or renew or test):
+        logging.error("You have to choose at least 1 parameter! Use --help option to find the approptiate flags.")
+        sys.exit(116)
 
 if __name__ == "__main__":
     app()
