@@ -18,13 +18,23 @@ class ConfigOptions:
     """This class is responsible to generate, reload or test the HAProxy config"""
 
     def __init__(self):
-        return self
+        self.irony = 1
     
     def reload(self):
         return self
 
     def generate(self):
-        return self
+        yaml_db = YamlFileManipulations().read()
+        template = Template(JinjaReadWrite().read())
+
+        if os.path.exists("/ssl/"):
+            if len(os.listdir("/ssl/")) != 0:
+                ssl_folder_not_empty = True
+        else:
+            ssl_folder_not_empty = False
+        
+        template = template.render(ssl_folder_not_empty=ssl_folder_not_empty, yaml_db=yaml_db)
+        return template
 
     def test(self):
         return self
@@ -82,23 +92,12 @@ def config(reload:bool=typer.Option(False, help="Generate, test and reload the c
         print("You can't use these options together!")
         exit(120)
 
-    if generate:
-        yaml_db = YamlFileManipulations().read()
-        template = Template(JinjaReadWrite().read())
-
-        if os.path.exists("/ssl/"):
-            if len(os.listdir("/ssl/")) != 0:
-                ssl_folder_not_empty = True
-        else:
-            ssl_folder_not_empty = False
-        
-        template = template.render(ssl_folder_not_empty=ssl_folder_not_empty, yaml_db=yaml_db)
-        
-        print(template)
+    if show:
+        print(ConfigOptions().generate())
 
 
 @app.command()
-def db(add:bool=typer.Option(False, help="Generate, test and reload the config"), \
+def site_db(add:bool=typer.Option(False, help="Generate, test and reload the config"), \
     remove:bool=typer.Option(False, help="Only generate new config (used for troubleshooting)"), \
     update:bool=typer.Option(False, help="Only generate new config (used for troubleshooting)"), \
     show:bool=typer.Option(False, help="Print out the latest config"), \
