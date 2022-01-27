@@ -9,7 +9,7 @@ import sys
 
 
 haproxy_site_db_location = "haproxy_site_db.yml"
-haproxy_config_template_location = "haproxy_config_template_yaml.cfg1"
+haproxy_config_template_location = "haproxy_config_template_yaml.cfg"
 haproxy_config_location = "haproxy_yaml.cfg"
 
 
