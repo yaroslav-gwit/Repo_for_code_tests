@@ -5,10 +5,11 @@ import yaml
 import os
 import logging
 import syslog
+import sys
 
 
 haproxy_site_db_location = "haproxy_site_db.yml"
-haproxy_config_template_location = "haproxy_config_template_yaml.cfg"
+haproxy_config_template_location = "haproxy_config_template_yaml.cfg1"
 haproxy_config_location = "haproxy_yaml.cfg"
 
 
@@ -59,7 +60,7 @@ class YamlFileManipulations:
                 yaml.dump(self.yaml_input_dict, file)
         else:
             print("There is no input (dictionary) to work with!")
-            exit(119)
+            sys.exit(119)
 
 
 class SSLCerts:
@@ -75,7 +76,7 @@ class SSLCerts:
             message_ = "There was no frontend address set!"
             logging.critical(message_)
             syslog.syslog(syslog.LOG_CRIT, message_)
-            exit(117)
+            sys.exit(117)
 
         command = "certbot certonly --standalone -d " + self.frontend_adress + " --non-interactive --agree-tos --email=slv@yari.pw --http-01-port=8888"
         subprocess.run(command, shell=True, stdout=None)
@@ -133,7 +134,7 @@ class JinjaReadWrite:
             message_ = "Template file doesn't exist!"
             logging.critical(message_)
             syslog.syslog(syslog.LOG_CRIT, message_)
-            exit(118)
+            sys.exit(118)
 
     def read(self):
         with open(self.haproxy_config_template, 'r') as file:
@@ -154,7 +155,7 @@ def config(reload:bool=typer.Option(False, help="Generate, test and reload the c
 
     if (reload and generate) or (reload and test) or (generate and test):
         print("You can't use these options together!")
-        exit(120)
+        sys.exit(120)
 
     if show:
         print(ConfigOptions().generate())
@@ -173,7 +174,7 @@ def site_db(add:bool=typer.Option(False, help="Generate, test and reload the con
 
     if (add and remove) or (add and update) or (remove and update):
         print("You can't use these options together!")
-        exit(120)
+        sys.exit(120)
 
     if show:
         yaml_db = yaml.dump(YamlFileManipulations().read(), sort_keys=False)
