@@ -66,9 +66,9 @@ class YamlFileManipulations:
 class SSLCerts:
     """This class is responsible for dealing with SSL certificates"""
 
-    def __init__(self, frontend_adress = False, www_redirect:bool = False):
+    def __init__(self, frontend_adress = False, www_redirection:bool = False):
         self.frontend_adress = frontend_adress
-        self.www_redirect = www_redirect
+        self.www_redirection = www_redirection
     
 
     def new_cert_from_le(self):
@@ -79,24 +79,36 @@ class SSLCerts:
             sys.exit(117)
 
         command = "certbot certonly --standalone -d " + self.frontend_adress + " --non-interactive --agree-tos --email=slv@yari.pw --http-01-port=8888"
-        subprocess.run(command, shell=True, stdout=None)
+        # subprocess.run(command, shell=True, stdout=None)
+        print(command)
         # Create SSL check here
         # Copy over new certificates if the operation was successfull
         command = "cat /etc/letsencrypt/live/" + self.frontend_adress + "/fullchain.pem /etc/letsencrypt/live/" + self.frontend_adress + "/privkey.pem > /ssl/" + self.frontend_adress + ".pem"
-        subprocess.run(command, shell=True, stdout=None)
+        print(command)
+        # subprocess.run(command, shell=True, stdout=None)
 
-        if self.www_redirect:
+        if self.www_redirection:
             command = "certbot certonly --standalone -d www." + self.frontend_adress + " --non-interactive --agree-tos --email=slv@yari.pw --http-01-port=8888"
-            subprocess.run(command, shell=True, stdout=None)
+            print(command)
+            # subprocess.run(command, shell=True, stdout=None)
 
             # Create SSL check here
             # Copy over new certificates if the operation was successfull
 
             command = "cat /etc/letsencrypt/live/www." + self.frontend_adress + "/fullchain.pem /etc/letsencrypt/live/www." + self.frontend_adress + "/privkey.pem > /ssl/www." + self.frontend_adress + ".pem"
-            subprocess.run(command, shell=True, stdout=None)
+            print(command)
+            # subprocess.run(command, shell=True, stdout=None)
 
         status = ("Success", "Failure")
         return status
+
+
+    def init(self):
+        yaml_db = YamlFileManipulations().read()
+        for site in yaml_db["sites"]:
+            www_redirection = site.get("www_redirection", False)
+            frontend_adress = site["site_name"]
+            SSLCerts(frontend_adress=frontend_adress, www_redirection=www_redirection).new_cert_from_le()
 
 
     def create_self_signed(self):
@@ -163,24 +175,22 @@ def config(reload:bool=typer.Option(False, help="Generate, test and reload the c
 
 
 @app.command()
-def site_db(add:str=typer.Argument("", help="Generate, test and reload the config"), \
-    site_address:str=typer.Option("", help="Only generate new config (used for troubleshooting)"), \
-    owner:str=typer.Option("", help="Only generate new config (used for troubleshooting)"), \
-    backend_servers:str=typer.Option("", help="Only generate new config (used for troubleshooting)"), \
-    backend_http2:bool=typer.Option(False, help="Only generate new config (used for troubleshooting)"), \
-    backend_https:bool=typer.Option(False, help="Only generate new config (used for troubleshooting)"), \
-    www_redirection:bool=typer.Option(False, help="Only generate new config (used for troubleshooting)"), \
-    x_realip:bool=typer.Option(False, help="Only generate new config (used for troubleshooting)"), \
-    remove:str=typer.Argument("", help="Only generate new config (used for troubleshooting)"), \
-    update:str=typer.Argument("", help="Only generate new config (used for troubleshooting)"), \
-    show:bool=typer.Option(False, help="Print out the latest config"), \
+def site_db(add:str=typer.Option("", help="Add new site to the database."),
+    update:str=typer.Option("", help="Update one of the sites in the database"),
+    remove:str=typer.Option("", help="Remove the site from the database"),
+    owner:str=typer.Option("", help="Specify site owner"),
+    backend_servers:str=typer.Option("", help="Backend servers, coma separated: 1.1.1.1:433,2.2.2.2:8443"),
+    backend_http2:bool=typer.Option(False, help="Use HTTP/2 on the backend"),
+    backend_https:bool=typer.Option(False, help="Use HTTPs on the backend"),
+    www_redirection:bool=typer.Option(False, help="Activate \"www -> root domain\" redirection"),
+    x_realip:bool=typer.Option(False, help="Use X-Real-IP instead of Forwarded-IP"),
+    show:bool=typer.Option(False, help="Show the current database"),
         ):
 
     '''
     Example: program 
     '''
     
-
     if (add and remove) or (add and update) or (remove and update):
         logging.error("You can't use these options together!")
         sys.exit(120)
@@ -189,7 +199,15 @@ def site_db(add:str=typer.Argument("", help="Generate, test and reload the confi
         sys.exit(116)
 
     if add:
-        print("Works!")
+        print(add)
+        exit(0)
+
+    if update:
+        print(update)
+        exit(0)
+
+    if remove:
+        print(update)
         exit(0)
 
     if show:
@@ -200,6 +218,7 @@ def site_db(add:str=typer.Argument("", help="Generate, test and reload the confi
 @app.command()
 def certificate(request:str=typer.Option("", help="Request a new certificate from LetsEncrypt and copy it over to /ssl/ folder"), \
     self_signed:str=typer.Option("", help="Generate a new self signed certificate and copy it over to /ssl/ folder"), \
+    init:bool=typer.Option(False, help="Generate a new self signed certificate and copy it over to /ssl/ folder"), \
     renew:str=typer.Option("", help="Renews the certificate for a given site name"), \
     test:str=typer.Option("", help="Test a given certificate for validity"), \
         ):
@@ -208,9 +227,12 @@ def certificate(request:str=typer.Option("", help="Request a new certificate fro
     Example: program 
     '''
     
-    if not (request or self_signed or renew or test):
+    if not (request or self_signed or renew or test or init):
         logging.error("You have to choose at least 1 parameter! Use --help option to find the approptiate flags.")
         sys.exit(116)
+    
+    if init:
+        SSLCerts().init()
 
 if __name__ == "__main__":
     app()
