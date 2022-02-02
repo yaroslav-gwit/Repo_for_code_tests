@@ -57,7 +57,7 @@ class YamlFileManipulations:
     def write(self):
         if self.yaml_input_dict:
             with open(self.yaml_file, 'w') as file:
-                yaml.dump(self.yaml_input_dict, file)
+                yaml.dump(self.yaml_input_dict, file, sort_keys=False)
         else:
             print("There is no input (dictionary) to work with!")
             sys.exit(119)
@@ -192,18 +192,52 @@ def site_db():
     
     yaml_db = yaml.dump(YamlFileManipulations().read(), sort_keys=False)
     print(yaml_db)
+    
+    # Dict output:
+    # print(YamlFileManipulations().read())
 
 
 @app.command()
 def site_db_add(site_name:str=typer.Argument(..., help="Add new site to the database."),
-    owner:str=typer.Option("", help="Specify site owner"),
+    owner:str=typer.Option("Yaroslav", help="Specify site owner"),
+    cert_type:str=typer.Option("certbot", help="Backend servers, coma separated: 1.1.1.1:433,2.2.2.2:8443"),
+    active:bool=typer.Option(True, help="Use HTTP/2 on the backend"),
+    www_redirection:bool=typer.Option(False, help="Activate \"www -> root domain\" redirection"),
     backend_servers:str=typer.Option("", help="Backend servers, coma separated: 1.1.1.1:433,2.2.2.2:8443"),
     backend_http2:bool=typer.Option(False, help="Use HTTP/2 on the backend"),
     backend_https:bool=typer.Option(False, help="Use HTTPs on the backend"),
-    www_redirection:bool=typer.Option(False, help="Activate \"www -> root domain\" redirection"),
     x_realip:bool=typer.Option(False, help="Use X-Real-IP instead of Forwarded-IP"),
     ):
-    return
+    
+    site = {}
+    site["site_name"] = site_name
+    site["active"] = active
+    site["cert_type"] = cert_type
+    site["www_redirection"] = www_redirection
+    site["use_x_realip"] = x_realip
+    if owner:
+        site["owner"] = owner
+    
+    site["backend_servers"] = []
+    for backend_server in backend_servers.split(","):
+        backend_server_dict = {}
+        backend_server_dict["backend_server_address"] = backend_server
+        backend_server_dict["backend_server_http2"] = backend_http2
+        backend_server_dict["backend_server_https"] = backend_https
+        site["backend_servers"].append(backend_server_dict)
+
+    yaml_db = YamlFileManipulations().read()
+
+    for site_name in yaml_db["sites"]:
+        if site_name["site_name"] == site["site_name"]:
+            print("This site already exists in our database!")
+            sys.exit(1)
+    
+    yaml_db["sites"].append(site)
+
+    YamlFileManipulations(yaml_input_dict=yaml_db).write()
+    yaml_db = yaml.dump(YamlFileManipulations().read(), sort_keys=False,)
+    print(yaml_db)
 
 
 @app.command()
@@ -229,12 +263,13 @@ def site_db_remove(site_name:str=typer.Argument(..., help="Site address")):
 
 @app.command()
 def certificate(
-    request:str=typer.Option("gateway-it.com", help="Request a new certificate from LetsEncrypt and copy it over to /ssl/ folder"),
-    self_signed:str=typer.Option("gateway-it.com", help="Generate a new self signed certificate and copy it over to /ssl/ folder"),
+    request:str=typer.Option("", help="Request a new certificate from LetsEncrypt and copy it over to /ssl/ folder"),
+    self_signed:str=typer.Option("", help="Generate a new self signed certificate and copy it over to /ssl/ folder"),
     init:bool=typer.Option(False, help="Generate a new self signed certificate and copy it over to /ssl/ folder"),
-    renew:str=typer.Option("gateway-it.com", help="Renews the certificate for a given site name"),
-    test:str=typer.Option("gateway-it.com", help="Test a given certificate for validity"),
+    renew:str=typer.Option("", help="Renews the certificate for a given site name"),
+    test:str=typer.Option("", help="Test a given certificate for validity"),
     fake:bool=typer.Option(False, help="Print executable commands to the screen (useful for debugging)"),
+    www_redirection:bool=typer.Option(False, help="Print executable commands to the screen (useful for debugging)"),
     ):
 
     """
@@ -248,6 +283,8 @@ def certificate(
     
     if init:
         SSLCerts(fake=fake).init()
+    elif request:
+        SSLCerts(fake=fake, frontend_adress=request, www_redirection=www_redirection).new_cert_from_le()
 
 
 if __name__ == "__main__":

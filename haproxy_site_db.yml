@@ -1,47 +1,161 @@
----
 sites:
-  - site_name: allliance.ru
-    active: no
-    cert_type: certbot
-    www_redirection: yes
-    owner: Yaroslav Koisa
-    backend_servers:
-    - backend_server_address: 10.0.1.104:443
-      backend_server_http2: yes
-      backend_server_https: yes
+- site_name: gateway-it.com
+  active: true
+  cert_type: certbot
+  www_redirection: true
+  owner: Yaroslav Koisa
+  use_x_realip: true
+  backend_servers:
+  - backend_server_address: 192.168.1.1:443
+    backend_server_name: apolo1
+    backend_server_http2: true
+    backend_server_https: true
+  - backend_server_address: 192.168.1.2:80
+    backend_server_http2: false
+    backend_server_https: true
+  - backend_server_address: 192.168.1.3:8080
+    backend_server_http2: true
+    backend_server_https: false
 
-  - site_name: passwords.yari.pw
-    active: yes
-    cert_type: certbot
-    use_x_realip: yes
-    owner: Yaroslav Koisa
-    backend_servers:
-    - backend_server_address: 192.168.121.168:3002
+- site_name: test.gateway-it.com
+  active: true
+  cert_type: certbot
+  www_redirection: true
+  use_x_realip: true
+  owner: Yaroslav Koisa
+  backend_servers:
+  - backend_server_address: 192.168.1.1:90
+    backend_server_http2: false
+    backend_server_https: false
 
-  - site_name: gateway-it.com
-    active: yes
-    cert_type: certbot
-    www_redirection: yes
-    owner: Yaroslav Koisa
-    use_x_realip: yes
-    backend_servers:
-    - backend_server_address: 192.168.1.1:443
-      backend_server_name: apolo1
-      backend_server_http2: yes
-      backend_server_https: yes
-    - backend_server_address: 192.168.1.2:80
-      backend_server_http2: no
-      backend_server_https: yes
-    - backend_server_address: 192.168.1.3:8080
-      backend_server_http2: yes
-      backend_server_https: no
+- site_name: mraz.gateway-it.com
+  active: true
+  cert_type: selfsigned
+  www_redirection: true
+  owner: Yaroslav Koisa
+  backend_servers:
+  - backend_server_address: 192.168.1.2:90
+    backend_server_http2: false
+    backend_server_https: false
 
-  - site_name: test.gateway-it.com
-    active: yes
-    cert_type: certbot
-    www_redirection: no
-    owner: Yaroslav Koisa
-    backend_servers:
-    - backend_server_address: 192.168.1.1:90
-      backend_server_http2: no
-      backend_server_https: no
+- site_name: trururu.gateway-it.com
+  active: true
+  cert_type: selfsigned
+  www_redirection: false
+  owner: Yaroslav Koisa
+  backend_servers:
+  - backend_server_address: 192.168.1.2:90
+    backend_server_http2: false
+    backend_server_https: false
+
+- site_name: suka.gateway-it.com
+  active: true
+  cert_type: certbot
+  www_redirection: false
+  use_x_realip: false
+  owner: Yaroslav
+  backend_servers:
+  - backend_server_address: 192.168.1.0:443
+    backend_server_http2: false
+    backend_server_https: false
+  - backend_server_address: 192.168.1.2:80
+    backend_server_http2: false
+    backend_server_https: false
+
+- site_name: auka.gateway-it.com
+  active: true
+  cert_type: certbot
+  www_redirection: false
+  use_x_realip: false
+  owner: Yaroslav
+  backend_servers:
+  - backend_server_address: 192.168.1.0:443
+    backend_server_http2: false
+    backend_server_https: false
+  - backend_server_address: 192.168.1.2:80
+    backend_server_http2: false
+    backend_server_https: false
+
+- site_name: muka.gateway-it.com
+  active: true
+  cert_type: certbot
+  www_redirection: true
+  use_x_realip: false
+  owner: Yaroslav
+  backend_servers:
+  - backend_server_address: 192.168.1.0:443
+    backend_server_http2: false
+    backend_server_https: false
+  - backend_server_address: 192.168.1.2:80
+    backend_server_http2: false
+    backend_server_https: false
+
+- site_name: muka.gateway-it.com
+  active: true
+  cert_type: certbot
+  www_redirection: true
+  use_x_realip: true
+  owner: Yaroslav
+  backend_servers:
+  - backend_server_address: 192.168.1.0:443
+    backend_server_http2: false
+    backend_server_https: false
+  - backend_server_address: 192.168.1.2:80
+    backend_server_http2: false
+    backend_server_https: false
+
+- site_name: fuka.gateway-it.com
+  active: true
+  cert_type: certbot
+  www_redirection: false
+  use_x_realip: true
+  owner: Yaroslav
+  backend_servers:
+  - backend_server_address: 192.168.1.0:443
+    backend_server_http2: false
+    backend_server_https: false
+  - backend_server_address: 192.168.1.2:80
+    backend_server_http2: false
+    backend_server_https: false
+
+- site_name: tuka.gateway-it.com
+  active: true
+  cert_type: certbot
+  www_redirection: false
+  use_x_realip: true
+  owner: Yaroslav
+  backend_servers:
+  - backend_server_address: 192.168.1.0:443
+    backend_server_http2: false
+    backend_server_https: false
+  - backend_server_address: 192.168.1.2:80
+    backend_server_http2: false
+    backend_server_https: false
+
+- site_name: xuka.gateway-it.com
+  active: true
+  cert_type: certbot
+  www_redirection: false
+  use_x_realip: true
+  owner: Yaroslav
+  backend_servers:
+  - backend_server_address: 192.168.1.0:443
+    backend_server_http2: false
+    backend_server_https: false
+  - backend_server_address: 192.168.1.2:80
+    backend_server_http2: false
+    backend_server_https: false
+    
+- site_name: quka.gateway-it.com
+  active: true
+  cert_type: certbot
+  www_redirection: false
+  use_x_realip: true
+  owner: Yaroslav
+  backend_servers:
+  - backend_server_address: 192.168.1.0:443
+    backend_server_http2: false
+    backend_server_https: false
+  - backend_server_address: 192.168.1.2:80
+    backend_server_http2: false
+    backend_server_https: false
