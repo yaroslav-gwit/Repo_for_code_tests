@@ -1,0 +1,16 @@
+package main
+
+import "fmt"
+
+func main() {
+	// var whatToSay string
+	// whatToSay = "Hello world!"
+	whatToSay := "Hello world!"
+	sayHelloWorld(whatToSay)
+	// fmt.Printf("Hello world!\n")
+	// fmt.Println("Здрастє!")
+}
+
+func sayHelloWorld(whatToSay string) {
+	fmt.Println(whatToSay)
+}
