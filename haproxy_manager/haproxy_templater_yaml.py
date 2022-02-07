@@ -13,7 +13,6 @@ haproxy_config_template_location = "haproxy_config_template_yaml.cfg"
 haproxy_config_location = "haproxy_yaml.cfg"
 
 
-app = typer.Typer(context_settings=dict(max_content_width=800))
 
 
 class ConfigOptions:
@@ -48,12 +47,17 @@ class YamlFileManipulations:
     def __init__(self, yaml_file: str = haproxy_site_db_location, yaml_input_dict = False):
         self.yaml_file = yaml_file
         self.yaml_input_dict = yaml_input_dict
+    
 
     def read(self):
-        with open(self.yaml_file, 'r') as file:
-            yaml_file = yaml.safe_load(file)
+        if not os.path.exists(self.yaml_file) or os.stat(self.yaml_file).st_size == 0:
+            yaml_file = { "sites": [] }
+        else:
+            with open(self.yaml_file, 'r') as file:
+                yaml_file = yaml.safe_load(file)
         return yaml_file
 
+    
     def write(self):
         if self.yaml_input_dict:
             with open(self.yaml_file, 'w') as file:
@@ -161,6 +165,11 @@ class JinjaReadWrite:
         return haproxy_config_template
 
 
+""" Code below is responsible for CLI """
+
+app = typer.Typer(context_settings=dict(max_content_width=800))
+
+
 @app.command()
 def config(reload:bool=typer.Option(False, help="Generate, test and reload the config"), \
     generate:bool=typer.Option(False, help="Only generate new config (used for troubleshooting)"), \
@@ -186,29 +195,31 @@ def config(reload:bool=typer.Option(False, help="Generate, test and reload the c
 @app.command()
 def site_db():
 
-    '''
+    """
     site-db shows site database in the form of YAML console output
-    '''
+    """
     
     yaml_db = yaml.dump(YamlFileManipulations().read(), sort_keys=False)
     print(yaml_db)
     
-    # Dict output:
-    # print(YamlFileManipulations().read())
-
 
 @app.command()
 def site_db_add(site_name:str=typer.Argument(..., help="Add new site to the database."),
-    owner:str=typer.Option("Yaroslav", help="Specify site owner"),
+    owner:str=typer.Option("", help="Specify site owner"),
     cert_type:str=typer.Option("certbot", help="Backend servers, coma separated: 1.1.1.1:433,2.2.2.2:8443"),
     active:bool=typer.Option(True, help="Use HTTP/2 on the backend"),
     www_redirection:bool=typer.Option(False, help="Activate \"www -> root domain\" redirection"),
-    backend_servers:str=typer.Option("", help="Backend servers, coma separated: 1.1.1.1:433,2.2.2.2:8443"),
+    backend_servers:str=typer.Option(..., help="Backend servers, coma separated: 1.1.1.1:433,2.2.2.2:8443"),
     backend_http2:bool=typer.Option(False, help="Use HTTP/2 on the backend"),
     backend_https:bool=typer.Option(False, help="Use HTTPs on the backend"),
     x_realip:bool=typer.Option(False, help="Use X-Real-IP instead of Forwarded-IP"),
     ):
-    
+
+    """
+    This argument deals with adding new sites to our YAML database.
+    Example: proxy_manager.py site-db-add gateway-it.com --backend-servers 192.168.1.1:443,192.168.2.1:443 --backend-http2 --backend-https
+    """
+
     site = {}
     site["site_name"] = site_name
     site["active"] = active
@@ -230,14 +241,12 @@ def site_db_add(site_name:str=typer.Argument(..., help="Add new site to the data
 
     for site_name in yaml_db["sites"]:
         if site_name["site_name"] == site["site_name"]:
-            print("This site already exists in our database!")
+            print("The site " + site["site_name"] + " already exists in our database!")
             sys.exit(1)
     
     yaml_db["sites"].append(site)
 
     YamlFileManipulations(yaml_input_dict=yaml_db).write()
-    yaml_db = yaml.dump(YamlFileManipulations().read(), sort_keys=False,)
-    print(yaml_db)
 
 
 @app.command()
@@ -258,7 +267,25 @@ def site_db_remove(site_name:str=typer.Argument(..., help="Site address")):
     This argument deals with removing sites from YAML database.
     Example: proxy_manager.py site-db-remove gateway-it.com
     """
-    return
+    
+    yaml_db = YamlFileManipulations().read()
+    yaml_db_lenght = len(yaml_db["sites"])
+    
+    if yaml_db_lenght == 0:
+        print("The database list is empty! Please add one or more websites.")
+        sys.exit(1)
+
+    for site_number in range(0, yaml_db_lenght):
+        site_name_inThisLoop = yaml_db["sites"][site_number]["site_name"]
+        if site_name == site_name_inThisLoop:
+            del yaml_db["sites"][site_number]
+            print("The site " + site_name + " was removed from our database!")
+            YamlFileManipulations(yaml_input_dict=yaml_db).write()
+            sys.exit(0)
+        elif site_name != site_name_inThisLoop and site_number == yaml_db_lenght-1:
+            print("Site was not found in our database!")
+            break
+    
 
 
 @app.command()
