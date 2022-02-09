@@ -250,15 +250,28 @@ def site_db_add(site_name:str=typer.Argument(..., help="Add new site to the data
 
 
 @app.command()
-def site_db_update(site_name:str=typer.Argument(..., help="Update one of the sites in YAML database."),
-    owner:str=typer.Option("", help="Specify site owner"),
-    backend_servers:str=typer.Option("", help="Backend servers, coma separated: 1.1.1.1:433,2.2.2.2:8443"),
-    backend_http2:bool=typer.Option(False, help="Use HTTP/2 on the backend"),
-    backend_https:bool=typer.Option(False, help="Use HTTPs on the backend"),
-    www_redirection:bool=typer.Option(False, help="Activate \"www -> root domain\" redirection"),
-    x_realip:bool=typer.Option(False, help="Use X-Real-IP instead of Forwarded-IP"),
+def site_db_update(site_name:str=typer.Argument(..., help="Add new site to the database."),
+    owner:str=typer.Option(..., help="Specify site owner"),
+    cert_type:str=typer.Option(..., help="Backend servers, coma separated: 1.1.1.1:433,2.2.2.2:8443"),
+    active:bool=typer.Option(..., help="Use HTTP/2 on the backend"),
+    www_redirection:bool=typer.Option(..., help="Activate \"www -> root domain\" redirection"),
+    backend_servers:str=typer.Option(..., help="Backend servers, coma separated: 1.1.1.1:433,2.2.2.2:8443"),
+    backend_http2:bool=typer.Option(..., help="Use HTTP/2 on the backend"),
+    backend_https:bool=typer.Option(..., help="Use HTTPs on the backend"),
+    x_realip:bool=typer.Option(..., help="Use X-Real-IP instead of Forwarded-IP"),
     ):
-    return
+
+    """
+    This argument deals with updating sites in our YAML database.
+    Example: proxy_manager.py site-db-update gateway-it.com --backend-servers 192.168.1.1:443,192.168.2.1:443 --backend-http2 --backend-https
+    """    
+
+    yaml_db = YamlFileManipulations().read()
+
+    for site_name in yaml_db["sites"]:
+        if site_name["site_name"] == site["site_name"]:
+            print("The site " + site["site_name"] + " already exists in our database!")
+            sys.exit(1)
 
 
 @app.command()
@@ -286,6 +299,41 @@ def site_db_remove(site_name:str=typer.Argument(..., help="Site address")):
             print("Site was not found in our database!")
             break
     
+
+@app.command()
+def site_db_be_add(site_name:str=typer.Argument(..., help="Add new site to the database."),
+    be:str=typer.Option(..., help="Backend servers, coma separated: 1.1.1.1:433,2.2.2.2:8443"),
+    ):
+
+    """
+    This argument deals with add site backends to our YAML database.
+    Example: proxy_manager.py site-db-update gateway-it.com --backend-servers 192.168.1.1:443,192.168.2.1:443 --backend-http2 --backend-https
+    """    
+
+    yaml_db = YamlFileManipulations().read()
+
+    for site_name in yaml_db["sites"]:
+        if site_name["site_name"] == site["site_name"]:
+            print("The site " + site["site_name"] + " already exists in our database!")
+            sys.exit(1)
+
+
+@app.command()
+def site_db_be_remove(site_name:str=typer.Argument(..., help="Add new site to the database."),
+    be:str=typer.Option(..., help="Backend servers, coma separated: 1.1.1.1:433,2.2.2.2:8443"),
+    ):
+
+    """
+    This argument deals with removing site backends from our YAML database.
+    Example: proxy_manager.py site-db-update gateway-it.com --backend-servers 192.168.1.1:443,192.168.2.1:443 --backend-http2 --backend-https
+    """    
+
+    yaml_db = YamlFileManipulations().read()
+
+    for site_name in yaml_db["sites"]:
+        if site_name["site_name"] == site["site_name"]:
+            print("The site " + site["site_name"] + " already exists in our database!")
+            sys.exit(1)
 
 
 @app.command()
