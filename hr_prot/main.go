@@ -2,22 +2,17 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"path/filepath"
+	"io/ioutil"
+	"log"
 )
 
 func main() {
-	var files []string
-
-	root := "/zroot/vm-encrypted"
-	err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
-		files = append(files, path)
-		return nil
-	})
+	files, err := ioutil.ReadDir("/zroot/vm-encrypted/")
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
+
 	for _, file := range files {
-		fmt.Println(file)
+		fmt.Println(file.Name())
 	}
 }
