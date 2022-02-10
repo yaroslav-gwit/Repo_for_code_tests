@@ -9,7 +9,7 @@ import (
 func main() {
 	var files []string
 
-	root := "/zroot/vm-encrypted/"
+	root := "/zroot/vm-encrypted"
 	err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 		files = append(files, path)
 		return nil
