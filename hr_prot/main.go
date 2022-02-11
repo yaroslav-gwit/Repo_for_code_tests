@@ -31,12 +31,15 @@ func main() {
 	var outputTable = table.NewWriter()
 	outputTable.SetOutputMirror(os.Stdout)
 
-	outputTable.AppendHeader(table.Row{"#", "First Name", "Last Name", "Salary"})
-	outputTable.AppendRow([]interface{}{300, "Tyrion", "Lannister", 5000})
-	outputTable.AppendSeparator()
-	outputTable.AppendRow([]interface{}{300, "Tyrion", "Lannister", 5000})
-	outputTable.AppendSeparator()
-	outputTable.AppendRow([]interface{}{300, "Tyrion", "Lannister", 5000})
+	outputTable.AppendHeader(table.Row{"#", "VM Name", "Status"})
+
+	for index, vm := range vm_list {
+		if vmLiveCheck(vm) {
+			var vm_status = vm_is_live + vm_is_encrypted
+			outputTable.AppendRow([]interface{}{index + 1, vm, vm_status})
+		}
+	}
+
 	outputTable.AppendFooter(table.Row{"", "", "Total", 10000})
 
 	outputTable.SetStyle(table.StyleLight)
