@@ -9,7 +9,7 @@ import (
 func main() {
 	fmt.Println(vmList())
 	for _, vm := range vmList() {
-		vmLiveCheck(vm)
+		fmt.Println(vmLiveCheck(vm))
 	}
 }
 
