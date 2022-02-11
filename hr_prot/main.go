@@ -47,13 +47,17 @@ func main() {
 	var total_number_of_vms = strconv.Itoa(len(vm_list))
 	outputTable.AppendFooter(table.Row{"", "total vms: " + total_number_of_vms})
 
-	fmt.Println(datasetZfsList())
-
 	outputTable.SetStyle(table.StyleLight)
 	outputTable.Render()
 }
 
 func vmList(plain ...bool) []string {
+	var datasetZfs_var = DatasetZfsList()
+
+	for _, dataset := range datasetZfs_var.Datasets {
+		fmt.Println(dataset)
+	}
+
 	var folder_to_scan = "/zroot/vm-encrypted/"
 	folders, err := ioutil.ReadDir(folder_to_scan)
 	if err != nil {
@@ -84,7 +88,7 @@ func vmLiveCheck(vmname string) bool {
 	}
 }
 
-func datasetZfsList() datasetZfs {
+func DatasetZfsList() datasetZfs {
 	var conf_datasets_file, conf_datasets_error = os.ReadFile("conf_datasets.yaml")
 
 	if conf_datasets_error != nil {
@@ -96,10 +100,6 @@ func datasetZfsList() datasetZfs {
 	err := yaml.Unmarshal([]byte(conf_datasets_file), &datasetZfs_var)
 	if err != nil {
 		log.Fatalf("error: %v", err)
-	}
-
-	for _, dataset := range datasetZfs_var.Datasets {
-		fmt.Println(dataset.Mount_path)
 	}
 
 	return datasetZfs_var
