@@ -37,6 +37,11 @@ func main() {
 		if vmLiveCheck(vm) {
 			var vm_status = vm_is_live + vm_is_encrypted
 			outputTable.AppendRow([]interface{}{index + 1, vm, vm_status})
+			outputTable.AppendSeparator()
+		} else {
+			var vm_status = vm_is_not_live
+			outputTable.AppendRow([]interface{}{index + 1, vm, vm_status})
+			outputTable.AppendSeparator()
 		}
 	}
 
