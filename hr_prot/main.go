@@ -12,12 +12,10 @@ import (
 )
 
 type datasetZfs struct {
-	datasets struct {
-		name       string
-		mount_path string
-		zfs_path   string
-		encrypted  bool
-	}
+	name       string
+	mount_path string
+	zfs_path   string
+	encrypted  bool
 }
 
 //VM status icons
@@ -97,7 +95,7 @@ func datasetZfsList() string {
 		log.Fatalf("error: %v", err)
 	}
 
-	fmt.Print(datasetZfs_var.datasets.name[0])
+	fmt.Print(datasetZfs_var.name)
 
 	var conf_datasets_data_output = string(conf_datasets_file)
 
