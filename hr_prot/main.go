@@ -16,7 +16,7 @@ func main() {
 	var vm_list = vmList()
 
 	for _, vm := range vm_list {
-		if testFunc(vm) {
+		if vmLiveCheck(vm) {
 			var vm_name = vm + " " + vm_is_live + vm_is_encrypted
 			fmt.Println(vm_name)
 		} else {
@@ -50,24 +50,6 @@ func vmList(plain ...bool) []string {
 }
 
 func vmLiveCheck(vmname string) bool {
-	var bhyve_live_vms_folder = "/dev/vmm/"
-	vms, err := ioutil.ReadDir(bhyve_live_vms_folder)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	for index, vm := range vms {
-		if vm.Name() == vmname {
-			return true
-		} else if vm.Name() != vmname && index != len(vms) {
-			continue
-		}
-	}
-	return false
-}
-
-func testFunc(vmname string) bool {
 	var bhyve_live_vms_folder = "/dev/vmm/"
 	if _, err := os.Stat(bhyve_live_vms_folder + vmname); err == nil {
 		return true
