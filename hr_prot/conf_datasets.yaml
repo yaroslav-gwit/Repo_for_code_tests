@@ -1,4 +1,4 @@
-# datasets:
+datasets:
 - name: ZFS Encrypted
   type: zfs
   mount_path: /zroot/vm-encrypted/
