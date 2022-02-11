@@ -13,10 +13,10 @@ func main() {
 
 	for _, vm := range vm_list {
 		if vmLiveCheck(vm) {
-			var vm_name = live + vm
+			var vm_name = live + " " + vm
 			fmt.Println(vm_name)
 		} else {
-			var vm_name = not_live + vm
+			var vm_name = not_live + " " + vm
 			fmt.Println(vm_name)
 		}
 	}
