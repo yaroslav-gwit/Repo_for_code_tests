@@ -1,18 +1,25 @@
 package main
 
 import (
-	"fmt"
+	// "fmt"
 	"io/ioutil"
 	"log"
 )
 
 func main() {
-	files, err := ioutil.ReadDir("/zroot/vm-encrypted/")
+	vmList()
+}
+
+func vmList() {
+	folders, err := ioutil.ReadDir("/zroot/vm-encrypted/")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	for _, file := range files {
-		fmt.Println(file.Name())
+	var vm_list = []string{}
+
+	for _, folder := range folders {
+		vm_list = append(vm_list, folder.Name())
 	}
+	return vm_list
 }
