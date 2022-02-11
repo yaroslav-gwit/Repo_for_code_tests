@@ -97,7 +97,7 @@ func datasetZfsList() string {
 		log.Fatalf("error: %v", err)
 	}
 
-	fmt.Print(datasetZfs_var.datasets.name)
+	fmt.Print(datasetZfs_var.datasets.name[0])
 
 	var conf_datasets_data_output = string(conf_datasets_file)
 
