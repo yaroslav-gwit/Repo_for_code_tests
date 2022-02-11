@@ -8,15 +8,16 @@ import (
 
 func main() {
 	var vm_list = vmList()
-	var live = "🟢"
-	var not_live = "🔴"
+	var vm_is_live = "🟢"
+	var vm_is_not_live = "🔴"
+	var vm_is_encrypted = "🔒"
 
 	for _, vm := range vm_list {
 		if vmLiveCheck(vm) {
-			var vm_name = live + " " + vm
+			var vm_name = vm_is_live + vm_is_encrypted + " " + vm
 			fmt.Println(vm_name)
 		} else {
-			var vm_name = not_live + " " + vm
+			var vm_name = vm_is_not_live + " " + vm
 			fmt.Println(vm_name)
 		}
 	}
