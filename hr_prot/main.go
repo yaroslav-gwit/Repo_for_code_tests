@@ -45,8 +45,9 @@ func main() {
 	var total_number_of_vms = strconv.Itoa(len(vm_list))
 	outputTable.AppendFooter(table.Row{"", "total vms: " + total_number_of_vms})
 
+	datasetZfsList()
+
 	outputTable.SetStyle(table.StyleLight)
-	fmt.Println(datasetZfsList())
 	outputTable.Render()
 }
 
