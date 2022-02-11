@@ -83,23 +83,21 @@ func vmLiveCheck(vmname string) bool {
 }
 
 func datasetZfsList() string {
-	var conf_datasets_data, conf_datasets_error = os.ReadFile("conf_datasets.yaml")
+	var conf_datasets_file, conf_datasets_error = os.ReadFile("conf_datasets.yaml")
 
 	var datasetZfs_var = datasetZfs{}
-
 	if conf_datasets_error != nil {
 		panic(conf_datasets_error)
 	}
 
-	err := yaml.Unmarshal([]byte(conf_datasets_data), &datasetZfs_var)
-
+	err := yaml.Unmarshal([]byte(conf_datasets_file), &datasetZfs_var)
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
 
-	fmt.Println(datasetZfs_var)
+	fmt.Printf("--- t:\n%v\n\n", datasetZfs_var)
 
-	var conf_datasets_data_output = string(conf_datasets_data)
+	var conf_datasets_data_output = string(conf_datasets_file)
 
 	return conf_datasets_data_output
 }
