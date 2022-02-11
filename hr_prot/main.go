@@ -2,12 +2,13 @@ package main
 
 import (
 	// "fmt"
+	"fmt"
 	"io/ioutil"
 	"log"
 )
 
 func main() {
-	vmList()
+	fmt.Println(vmList())
 }
 
 func vmList() []string {
