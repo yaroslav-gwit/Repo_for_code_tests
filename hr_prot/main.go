@@ -42,7 +42,7 @@ func vmList(plain ...bool) []string {
 		var _, file_exists_error = os.Stat(vm_folder + "/vm.config")
 
 		if file_exists_error == nil {
-			vm_list = append(vm_list, vm_folder)
+			vm_list = append(vm_list, folder.Name())
 		}
 	}
 
