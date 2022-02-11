@@ -10,6 +10,13 @@ import (
 	"github.com/jedib0t/go-pretty/v6/table"
 )
 
+type datasetZfs struct {
+	name       string
+	mount_path string
+	zfs_path   string
+	encrypted  bool
+}
+
 //VM status icons
 const vm_is_live = "🟢"
 const vm_is_not_live = "🔴"
@@ -38,7 +45,7 @@ func main() {
 	outputTable.AppendFooter(table.Row{"", "total vms: " + total_number_of_vms})
 
 	outputTable.SetStyle(table.StyleLight)
-	fmt.Println("VM Table:")
+	fmt.Println(datasetZfsList())
 	outputTable.Render()
 }
 
@@ -71,4 +78,15 @@ func vmLiveCheck(vmname string) bool {
 	} else {
 		return false
 	}
+}
+
+func datasetZfsList() []byte {
+	var conf_datasets_data, conf_datasets_error = os.ReadFile("conf_datasets.yaml")
+
+	if conf_datasets_error != nil {
+		panic(conf_datasets_error)
+	}
+
+	fmt.Println(conf_datasets_data)
+	return conf_datasets_data
 }

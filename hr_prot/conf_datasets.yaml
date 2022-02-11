@@ -1,0 +1,12 @@
+datasets:
+  - name: ZFS Encrypted
+    type: zfs
+    mount_path: /zroot/vm-encrypted/
+    zfs_path: zroot/vm-encrypted
+    encrypted: yes
+  
+  - name: ZFS Unencrypted
+    type: zfs
+    mount_path: /zroot/vm-unencrypted/
+    zfs_path: zroot/vm-unencrypted
+    encrypted: no
