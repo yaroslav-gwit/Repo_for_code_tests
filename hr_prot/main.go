@@ -38,6 +38,9 @@ func main() {
 	t.AppendSeparator()
 	t.AppendRow([]interface{}{300, "Tyrion", "Lannister", 5000})
 	t.AppendFooter(table.Row{"", "", "Total", 10000})
+
+	t.AppendHeader(table.Row{"Hostname", "VM", "OS"})
+
 	t.SetStyle(table.StyleLight)
 	t.Render()
 }
