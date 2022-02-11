@@ -23,7 +23,7 @@ func vmList() []string {
 		_folder := folder_to_scan + folder.Name()
 		_files, _ := ioutil.ReadDir(_folder)
 		for _, _file := range _files {
-			if _file.Name() == "vm.conf" {
+			if _file.Name() == "vm.config" || _file.Name() == "vm.conf" {
 				vm_list = append(vm_list, folder.Name())
 			}
 		}
