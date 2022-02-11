@@ -36,13 +36,12 @@ func vmList(plain ...bool) []string {
 	var vm_list = []string{}
 
 	for _, folder := range folders {
-		var vm_folder = folder_to_scan + folder.Name()
-		// var vm_folder_files, _ = ioutil.ReadDir(vm_folder)
-
-		var _, file_exists_error = os.Stat(vm_folder + "/vm.config")
+		var vm_folder_full_path = folder_to_scan + folder.Name()
+		var vm_folder_name = folder.Name()
+		var _, file_exists_error = os.Stat(vm_folder_full_path + "/vm.config")
 
 		if file_exists_error == nil {
-			vm_list = append(vm_list, folder.Name())
+			vm_list = append(vm_list, vm_folder_name)
 		}
 	}
 
