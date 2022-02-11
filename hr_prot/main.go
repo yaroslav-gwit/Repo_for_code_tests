@@ -1,7 +1,6 @@
 package main
 
 import (
-	// "fmt"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -12,7 +11,8 @@ func main() {
 }
 
 func vmList() []string {
-	folders, err := ioutil.ReadDir("/zroot/vm-encrypted/")
+	var folder_to_scan = "/zroot/vm-encrypted/"
+	folders, err := ioutil.ReadDir(folder_to_scan)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -20,7 +20,13 @@ func vmList() []string {
 	var vm_list = []string{}
 
 	for _, folder := range folders {
-		vm_list = append(vm_list, folder.Name())
+		_folder := folder_to_scan + folder.Name()
+		_files, _ := ioutil.ReadDir(_folder)
+		for _, _file := range _files {
+			if _file.Name() == "vm.conf" {
+				vm_list = append(vm_list, folder.Name())
+			}
+		}
 	}
 	return vm_list
 }
