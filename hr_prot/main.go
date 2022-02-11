@@ -7,10 +7,15 @@ import (
 )
 
 func main() {
-	fmt.Println(vmList())
-	for _, vm := range vmList() {
-		fmt.Println(vmLiveCheck(vm))
+	var vm_list = vmList()
+
+	var vm_is_live = []bool{}
+	for _, vm := range vm_list {
+		vm_is_live = append(vm_is_live, vmLiveCheck(vm))
 	}
+
+	fmt.Println(vm_list)
+	fmt.Println(vm_is_live)
 }
 
 func vmList(plain ...bool) []string {
