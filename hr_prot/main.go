@@ -17,21 +17,10 @@ const vm_is_encrypted = "🔒"
 func main() {
 	var vm_list = vmList()
 
-	for _, vm := range vm_list {
-		if vmLiveCheck(vm) {
-			var vm_name = vm + " " + vm_is_live + vm_is_encrypted
-			fmt.Println(vm_name)
-		} else {
-			var vm_name = vm + " " + vm_is_not_live
-			fmt.Println(vm_name)
-		}
-	}
-
-	//TABLE
 	var outputTable = table.NewWriter()
 	outputTable.SetOutputMirror(os.Stdout)
 
-	outputTable.AppendHeader(table.Row{"#", "VM Name", "Status"})
+	outputTable.AppendHeader(table.Row{"#", "vm name", "status"})
 
 	for index, vm := range vm_list {
 		if vmLiveCheck(vm) {
@@ -45,9 +34,10 @@ func main() {
 		}
 	}
 
-	outputTable.AppendFooter(table.Row{"", "", "Total", 10000})
+	outputTable.AppendFooter(table.Row{"total vms", len(vm_list)})
 
 	outputTable.SetStyle(table.StyleLight)
+	fmt.Println("VM Table:")
 	outputTable.Render()
 }
 
