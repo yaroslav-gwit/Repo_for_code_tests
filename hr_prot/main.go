@@ -10,7 +10,7 @@ func main() {
 	vmList()
 }
 
-func vmList() {
+func vmList() []string {
 	folders, err := ioutil.ReadDir("/zroot/vm-encrypted/")
 	if err != nil {
 		log.Fatal(err)
