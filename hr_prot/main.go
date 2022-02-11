@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/jedib0t/go-pretty/v6/table"
+	"gopkg.in/yaml.v2"
 )
 
 type datasetZfs struct {
@@ -83,9 +84,19 @@ func vmLiveCheck(vmname string) bool {
 func datasetZfsList() string {
 	var conf_datasets_data, conf_datasets_error = os.ReadFile("conf_datasets.yaml")
 
+	var datasetZfs_var = datasetZfs{}
+
 	if conf_datasets_error != nil {
 		panic(conf_datasets_error)
 	}
+
+	err := yaml.Unmarshal([]byte(conf_datasets_data), &datasetZfs_var)
+
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
+	fmt.Println(datasetZfs_var)
 
 	var conf_datasets_data_output = string(conf_datasets_data)
 
