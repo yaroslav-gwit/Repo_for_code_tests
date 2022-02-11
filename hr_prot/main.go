@@ -70,8 +70,8 @@ func vmLiveCheck(vmname string) bool {
 func testFunc(vmname string) bool {
 	var bhyve_live_vms_folder = "/dev/vmm/"
 	if _, err := os.Stat(bhyve_live_vms_folder + vmname); err == nil {
-		return false
-	} else {
 		return true
+	} else {
+		return false
 	}
 }
