@@ -28,21 +28,19 @@ func main() {
 	}
 
 	//TABLE
-	t := table.NewWriter()
-	t.SetOutputMirror(os.Stdout)
-	t.AppendHeader(table.Row{"#", "First Name", "Last Name", "Salary"})
-	t.AppendRows([]table.Row{
-		{1, "Arya", "Stark", 3000},
-		{20, "Jon", "Snow", 2000, "You know nothing, Jon Snow!"},
-	})
-	t.AppendSeparator()
-	t.AppendRow([]interface{}{300, "Tyrion", "Lannister", 5000})
-	t.AppendFooter(table.Row{"", "", "Total", 10000})
+	var outputTable = table.NewWriter()
+	outputTable.SetOutputMirror(os.Stdout)
 
-	t.AppendHeader(table.Row{"Hostname", "VM", "OS"})
+	outputTable.AppendHeader(table.Row{"#", "First Name", "Last Name", "Salary"})
+	outputTable.AppendRow([]interface{}{300, "Tyrion", "Lannister", 5000})
+	outputTable.AppendSeparator()
+	outputTable.AppendRow([]interface{}{300, "Tyrion", "Lannister", 5000})
+	outputTable.AppendSeparator()
+	outputTable.AppendRow([]interface{}{300, "Tyrion", "Lannister", 5000})
+	outputTable.AppendFooter(table.Row{"", "", "Total", 10000})
 
-	t.SetStyle(table.StyleLight)
-	t.Render()
+	outputTable.SetStyle(table.StyleLight)
+	outputTable.Render()
 }
 
 func vmList(plain ...bool) []string {
