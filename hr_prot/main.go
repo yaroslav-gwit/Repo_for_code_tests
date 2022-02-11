@@ -8,14 +8,18 @@ import (
 
 func main() {
 	var vm_list = vmList()
+	var live = "🟢"
+	var not_live = "🔴"
 
-	var vm_is_live = []bool{}
 	for _, vm := range vm_list {
-		vm_is_live = append(vm_is_live, vmLiveCheck(vm))
+		if vmLiveCheck(vm) {
+			var vm_name = live + vm
+			fmt.Println(vm_name)
+		} else {
+			var vm_name = not_live + vm
+			fmt.Println(vm_name)
+		}
 	}
-
-	fmt.Println(vm_list)
-	fmt.Println(vm_is_live)
 }
 
 func vmList(plain ...bool) []string {
