@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
 )
 
 //VM status icons
@@ -15,7 +16,7 @@ func main() {
 	var vm_list = vmList()
 
 	for _, vm := range vm_list {
-		if vmLiveCheck(vm) {
+		if testFunc(vm) {
 			var vm_name = vm + " " + vm_is_live + vm_is_encrypted
 			fmt.Println(vm_name)
 		} else {
@@ -64,4 +65,13 @@ func vmLiveCheck(vmname string) bool {
 		}
 	}
 	return false
+}
+
+func testFunc(vmname string) bool {
+	var bhyve_live_vms_folder = "/dev/vmm/"
+	if _, err := os.Stat(bhyve_live_vms_folder + vmname); err == nil {
+		return false
+	} else {
+		return true
+	}
 }
