@@ -12,10 +12,12 @@ import (
 )
 
 type datasetZfs struct {
-	name       string
-	mount_path string
-	zfs_path   string
-	encrypted  bool
+	Datasets []struct {
+		Name       string `yaml:"name"`
+		Mount_path string `yaml:"mount_path"`
+		Zfs_path   string `yaml:"zfs_path"`
+		Encrypted  bool   `yaml:"encrypted"`
+	}
 }
 
 //VM status icons
@@ -45,7 +47,7 @@ func main() {
 	var total_number_of_vms = strconv.Itoa(len(vm_list))
 	outputTable.AppendFooter(table.Row{"", "total vms: " + total_number_of_vms})
 
-	datasetZfsList()
+	fmt.Println(datasetZfsList())
 
 	outputTable.SetStyle(table.StyleLight)
 	outputTable.Render()
@@ -82,7 +84,7 @@ func vmLiveCheck(vmname string) bool {
 	}
 }
 
-func datasetZfsList() string {
+func datasetZfsList() datasetZfs {
 	var conf_datasets_file, conf_datasets_error = os.ReadFile("conf_datasets.yaml")
 
 	if conf_datasets_error != nil {
@@ -90,14 +92,15 @@ func datasetZfsList() string {
 	}
 
 	var datasetZfs_var = datasetZfs{}
+
 	err := yaml.Unmarshal([]byte(conf_datasets_file), &datasetZfs_var)
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
 
-	fmt.Print(datasetZfs_var.name)
+	for _, dataset := range datasetZfs_var.Datasets {
+		fmt.Println(dataset.Mount_path)
+	}
 
-	var conf_datasets_data_output = string(conf_datasets_file)
-
-	return conf_datasets_data_output
+	return datasetZfs_var
 }
