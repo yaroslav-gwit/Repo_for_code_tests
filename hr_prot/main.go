@@ -6,18 +6,20 @@ import (
 	"log"
 )
 
+//VM status icons
+const vm_is_live = "🟢"
+const vm_is_not_live = "🔴"
+const vm_is_encrypted = "🔒"
+
 func main() {
 	var vm_list = vmList()
-	var vm_is_live = "🟢"
-	var vm_is_not_live = "🔴"
-	var vm_is_encrypted = "🔒"
 
 	for _, vm := range vm_list {
 		if vmLiveCheck(vm) {
-			var vm_name = vm_is_live + vm_is_encrypted + " " + vm
+			var vm_name = vm + " " + vm_is_live + vm_is_encrypted
 			fmt.Println(vm_name)
 		} else {
-			var vm_name = vm_is_not_live + " " + vm
+			var vm_name = vm + " " + vm_is_not_live
 			fmt.Println(vm_name)
 		}
 	}
@@ -35,6 +37,7 @@ func vmList(plain ...bool) []string {
 	for _, folder := range folders {
 		var vm_folder = folder_to_scan + folder.Name()
 		var vm_folder_files, _ = ioutil.ReadDir(vm_folder)
+
 		for _, file := range vm_folder_files {
 			if file.Name() == "vm.config" || file.Name() == "vm.conf" {
 				vm_list = append(vm_list, folder.Name())
