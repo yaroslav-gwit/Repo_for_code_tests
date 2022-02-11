@@ -24,16 +24,16 @@ func main() {
 	outputTable.AppendHeader(table.Row{"#", "vm name", "status"})
 
 	for index, vm := range vm_list {
+		var vm_status = ""
 		if vmLiveCheck(vm) {
-			var vm_status = vm_is_live + vm_is_encrypted
-			outputTable.AppendRow([]interface{}{index + 1, vm, vm_status})
-			outputTable.AppendSeparator()
+			vm_status = vm_is_live + vm_is_encrypted
 		} else {
-			var vm_status = vm_is_not_live
-			outputTable.AppendRow([]interface{}{index + 1, vm, vm_status})
-			outputTable.AppendSeparator()
+			vm_status = vm_is_not_live
 		}
+		outputTable.AppendRow([]interface{}{index + 1, vm, vm_status})
+		outputTable.AppendSeparator()
 	}
+
 	var total_number_of_vms = strconv.Itoa(len(vm_list))
 	outputTable.AppendFooter(table.Row{"", "total vms: " + total_number_of_vms})
 
