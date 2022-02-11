@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strconv"
 
 	"github.com/jedib0t/go-pretty/v6/table"
 )
@@ -33,8 +34,8 @@ func main() {
 			outputTable.AppendSeparator()
 		}
 	}
-
-	outputTable.AppendFooter(table.Row{"total vms", len(vm_list)})
+	var total_number_of_vms = strconv.Itoa(len(vm_list))
+	outputTable.AppendFooter(table.Row{"", "total vms: " + total_number_of_vms})
 
 	outputTable.SetStyle(table.StyleLight)
 	fmt.Println("VM Table:")
