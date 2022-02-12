@@ -100,10 +100,11 @@ func vmStatusCheck(vmname string) vmStatusCheckStruct {
 	const vm_is_not_live = "🔴"
 	const vm_is_encrypted = "🔒"
 
-	var bhyve_live_vms_folder = "/dev/vmm/"
 	var vmStatusCheckStruct_var = vmStatusCheckStruct{}
 	var vmStatusIcons = ""
+
 	//VM live check
+	var bhyve_live_vms_folder = "/dev/vmm/"
 	if _, err := os.Stat(bhyve_live_vms_folder + vmname); err == nil {
 		vmStatusCheckStruct_var.vmLive = true
 		vmStatusIcons = vm_is_live
@@ -112,8 +113,8 @@ func vmStatusCheck(vmname string) vmStatusCheckStruct {
 		vmStatusIcons = vm_is_not_live
 	}
 
-	var datasetsList_var = datasetsList()
 	//VM encryption check
+	var datasetsList_var = datasetsList()
 	for index, dataset := range datasetsList_var.Datasets {
 		var _, err = os.Stat(dataset.Mount_path + vmname)
 		if err == nil {
