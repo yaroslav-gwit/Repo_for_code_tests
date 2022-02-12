@@ -54,29 +54,27 @@ func main() {
 
 func vmList(plain ...bool) []string {
 	var datasetsList_var = datasetsList()
+	var folder_to_scan string
+	var vm_list = []string{}
 
 	for _, dataset := range datasetsList_var.Datasets {
 		fmt.Println(dataset)
-	}
+		folder_to_scan = dataset.Mount_path
+		folders, err := ioutil.ReadDir(folder_to_scan)
+		if err != nil {
+			log.Fatal(err)
+		}
 
-	var folder_to_scan = "/zroot/vm-encrypted/"
-	folders, err := ioutil.ReadDir(folder_to_scan)
-	if err != nil {
-		log.Fatal(err)
-	}
+		for _, folder := range folders {
+			var vm_folder_full_path = folder_to_scan + folder.Name()
+			var vm_folder_name = folder.Name()
+			var _, file_exists_error = os.Stat(vm_folder_full_path + "/vm.config")
 
-	var vm_list = []string{}
-
-	for _, folder := range folders {
-		var vm_folder_full_path = folder_to_scan + folder.Name()
-		var vm_folder_name = folder.Name()
-		var _, file_exists_error = os.Stat(vm_folder_full_path + "/vm.config")
-
-		if file_exists_error == nil {
-			vm_list = append(vm_list, vm_folder_name)
+			if file_exists_error == nil {
+				vm_list = append(vm_list, vm_folder_name)
+			}
 		}
 	}
-
 	return vm_list
 }
 
