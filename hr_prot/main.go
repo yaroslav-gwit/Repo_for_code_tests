@@ -11,12 +11,13 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-type datasetZfs struct {
+type datasetsListStruct struct {
 	Datasets []struct {
 		Name       string `yaml:"name"`
 		Mount_path string `yaml:"mount_path"`
 		Zfs_path   string `yaml:"zfs_path"`
 		Encrypted  bool   `yaml:"encrypted"`
+		Type       string `yaml:"type"`
 	}
 }
 
@@ -52,9 +53,9 @@ func main() {
 }
 
 func vmList(plain ...bool) []string {
-	var datasetZfs_var = DatasetZfsList()
+	var datasetsList_var = datasetsList()
 
-	for _, dataset := range datasetZfs_var.Datasets {
+	for _, dataset := range datasetsList_var.Datasets {
 		fmt.Println(dataset)
 	}
 
@@ -88,19 +89,19 @@ func vmLiveCheck(vmname string) bool {
 	}
 }
 
-func DatasetZfsList() datasetZfs {
+func datasetsList() datasetsListStruct {
 	var conf_datasets_file, conf_datasets_error = os.ReadFile("conf_datasets.yaml")
 
 	if conf_datasets_error != nil {
 		panic(conf_datasets_error)
 	}
 
-	var datasetZfs_var = datasetZfs{}
+	var datasetsList_var = datasetsListStruct{}
 
-	err := yaml.Unmarshal([]byte(conf_datasets_file), &datasetZfs_var)
+	err := yaml.Unmarshal([]byte(conf_datasets_file), &datasetsList_var)
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
 
-	return datasetZfs_var
+	return datasetsList_var
 }
