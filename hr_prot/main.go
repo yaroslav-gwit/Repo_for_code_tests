@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/facette/natsort"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"gopkg.in/yaml.v2"
 )
@@ -44,11 +45,6 @@ func main() {
 
 	for index, vm := range vm_list.vmName {
 		vm_status = vmStatusCheck(vm).vmStatusIcons
-		// if vmStatusCheck(vm) {
-		// 	vm_status = vm_is_live + vm_is_encrypted
-		// } else {
-		// 	vm_status = vm_is_not_live
-		// }
 		vm_dataset = vm_list.vmDataset[index]
 		outputTable.AppendRow([]interface{}{index + 1, vm, vm_status, vm_dataset})
 		outputTable.AppendSeparator()
@@ -91,6 +87,8 @@ func vmList(plain ...bool) vmListStruct {
 			}
 		}
 	}
+	natsort.Sort(vm_list.vmName)
+
 	return vm_list
 }
 
