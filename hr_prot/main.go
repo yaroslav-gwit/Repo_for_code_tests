@@ -26,10 +26,11 @@ type vmListStruct struct {
 	vmDataset []string
 }
 
-//VM status icons
-const vm_is_live = "🟢"
-const vm_is_not_live = "🔴"
-const vm_is_encrypted = "🔒"
+type vmStatusCheckStruct struct {
+	vmLive        bool
+	vmEncrypted   bool
+	vmStatusIcons string
+}
 
 func main() {
 	var vm_list = vmList()
@@ -42,11 +43,12 @@ func main() {
 	var vm_dataset = ""
 
 	for index, vm := range vm_list.vmName {
-		if vmLiveCheck(vm) {
-			vm_status = vm_is_live + vm_is_encrypted
-		} else {
-			vm_status = vm_is_not_live
-		}
+		vm_status = vmStatusCheck(vm).vmStatusIcons
+		// if vmStatusCheck(vm) {
+		// 	vm_status = vm_is_live + vm_is_encrypted
+		// } else {
+		// 	vm_status = vm_is_not_live
+		// }
 		vm_dataset = vm_list.vmDataset[index]
 		outputTable.AppendRow([]interface{}{index + 1, vm, vm_status, vm_dataset})
 		outputTable.AppendSeparator()
@@ -92,13 +94,41 @@ func vmList(plain ...bool) vmListStruct {
 	return vm_list
 }
 
-func vmLiveCheck(vmname string) bool {
+func vmStatusCheck(vmname string) vmStatusCheckStruct {
+	//VM status icons
+	const vm_is_live = "🟢"
+	const vm_is_not_live = "🔴"
+	const vm_is_encrypted = "🔒"
+
 	var bhyve_live_vms_folder = "/dev/vmm/"
+	var vmStatusCheckStruct_var = vmStatusCheckStruct{}
+	var vmStatusIcons = ""
+	//VM live check
 	if _, err := os.Stat(bhyve_live_vms_folder + vmname); err == nil {
-		return true
+		vmStatusCheckStruct_var.vmLive = true
+		vmStatusIcons = vm_is_live
 	} else {
-		return false
+		vmStatusCheckStruct_var.vmLive = false
+		vmStatusIcons = vm_is_not_live
 	}
+
+	var datasetsList_var = datasetsList()
+	//VM encryption check
+	for index, dataset := range datasetsList_var.Datasets {
+		var _, err = os.Stat(dataset.Mount_path + vmname)
+		if err == nil {
+			vmStatusIcons = vmStatusIcons + vm_is_encrypted
+			vmStatusCheckStruct_var.vmEncrypted = true
+		} else if err != nil && index != len(datasetsList_var.Datasets) {
+			continue
+		} else {
+			vmStatusCheckStruct_var.vmEncrypted = false
+			break
+		}
+	}
+
+	vmStatusCheckStruct_var.vmStatusIcons = vmStatusIcons
+	return vmStatusCheckStruct_var
 }
 
 func datasetsList() datasetsListStruct {
