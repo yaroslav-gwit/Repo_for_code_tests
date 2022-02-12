@@ -62,8 +62,7 @@ func main() {
 func vmList(plain ...bool) vmListStruct {
 	var datasetsList_var = datasetsList()
 	var folder_to_scan string
-	var vm_list = []string{}
-	var vmListStruct_var = vmListStruct{}
+	var vm_list = vmListStruct{}
 
 	for _, dataset := range datasetsList_var.Datasets {
 		fmt.Println(dataset)
@@ -79,16 +78,18 @@ func vmList(plain ...bool) vmListStruct {
 
 			var _, file_exists_error = os.Stat(vm_folder_full_path + "/vm.config")
 			if file_exists_error == nil {
-				vm_list = append(vm_list, vm_folder_name)
+				vm_list.vmName = append(vm_list.vmName, vm_folder_name)
+				vm_list.vmDataset = append(vm_list.vmDataset, dataset.Name)
 			}
 
 			var _, new_config_file_exists_error = os.Stat(vm_folder_full_path + "/vm.conf")
 			if new_config_file_exists_error == nil {
-				vm_list = append(vm_list, vm_folder_name)
+				vm_list.vmName = append(vm_list.vmName, vm_folder_name)
+				vm_list.vmDataset = append(vm_list.vmDataset, dataset.Name)
 			}
 		}
 	}
-	return vmListStruct_var
+	return vm_list
 }
 
 func vmLiveCheck(vmname string) bool {
