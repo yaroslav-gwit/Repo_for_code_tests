@@ -55,6 +55,7 @@ func main() {
 	var total_number_of_vms = strconv.Itoa(len(vm_list.vmName))
 	outputTable.AppendFooter(table.Row{"", "total vms: " + total_number_of_vms})
 
+	fmt.Println("VM List")
 	outputTable.SetStyle(table.StyleLight)
 	outputTable.Render()
 }
@@ -65,7 +66,6 @@ func vmList(plain ...bool) vmListStruct {
 	var vm_list = vmListStruct{}
 
 	for _, dataset := range datasetsList_var.Datasets {
-		fmt.Println(dataset)
 		folder_to_scan = dataset.Mount_path
 		folders, err := ioutil.ReadDir(folder_to_scan)
 		if err != nil {
