@@ -21,6 +21,11 @@ type datasetsListStruct struct {
 	}
 }
 
+type vmListStruct struct {
+	vmName    []string
+	vmDataset []string
+}
+
 //VM status icons
 const vm_is_live = "🟢"
 const vm_is_not_live = "🔴"
@@ -31,31 +36,34 @@ func main() {
 
 	var outputTable = table.NewWriter()
 	outputTable.SetOutputMirror(os.Stdout)
-
 	outputTable.AppendHeader(table.Row{"#", "vm name", "status"})
 
-	for index, vm := range vm_list {
-		var vm_status = ""
+	var vm_status = ""
+	var vm_dataset = ""
+
+	for index, vm := range vm_list.vmName {
 		if vmLiveCheck(vm) {
 			vm_status = vm_is_live + vm_is_encrypted
 		} else {
 			vm_status = vm_is_not_live
 		}
-		outputTable.AppendRow([]interface{}{index + 1, vm, vm_status})
+		vm_dataset = vm_list.vmDataset[index]
+		outputTable.AppendRow([]interface{}{index + 1, vm, vm_status, vm_dataset})
 		outputTable.AppendSeparator()
 	}
 
-	var total_number_of_vms = strconv.Itoa(len(vm_list))
+	var total_number_of_vms = strconv.Itoa(len(vm_list.vmName))
 	outputTable.AppendFooter(table.Row{"", "total vms: " + total_number_of_vms})
 
 	outputTable.SetStyle(table.StyleLight)
 	outputTable.Render()
 }
 
-func vmList(plain ...bool) []string {
+func vmList(plain ...bool) vmListStruct {
 	var datasetsList_var = datasetsList()
 	var folder_to_scan string
 	var vm_list = []string{}
+	var vmListStruct_var = vmListStruct{}
 
 	for _, dataset := range datasetsList_var.Datasets {
 		fmt.Println(dataset)
@@ -80,7 +88,7 @@ func vmList(plain ...bool) []string {
 			}
 		}
 	}
-	return vm_list
+	return vmListStruct_var
 }
 
 func vmLiveCheck(vmname string) bool {
