@@ -36,7 +36,7 @@ func main() {
 
 	var outputTable = table.NewWriter()
 	outputTable.SetOutputMirror(os.Stdout)
-	outputTable.AppendHeader(table.Row{"#", "vm name", "status"})
+	outputTable.AppendHeader(table.Row{"#", "vm name", "status", "dataset"})
 
 	var vm_status = ""
 	var vm_dataset = ""
