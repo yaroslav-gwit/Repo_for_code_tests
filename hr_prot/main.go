@@ -117,8 +117,10 @@ func vmStatusCheck(vmname string) vmStatusCheckStruct {
 	for index, dataset := range datasetsList_var.Datasets {
 		var _, err = os.Stat(dataset.Mount_path + vmname)
 		if err == nil {
-			vmStatusIcons = vmStatusIcons + vm_is_encrypted
-			vmStatusCheckStruct_var.vmEncrypted = true
+			if dataset.Encrypted {
+				vmStatusIcons = vmStatusIcons + vm_is_encrypted
+				vmStatusCheckStruct_var.vmEncrypted = true
+			}
 		} else if err != nil && index != len(datasetsList_var.Datasets) {
 			continue
 		} else {
