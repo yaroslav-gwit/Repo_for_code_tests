@@ -48,7 +48,7 @@ func main() {
 		vm_status = vmStatusCheck(vm).vmStatusIcons
 		vm_dataset = vm_list.vmDataset[index]
 		vm_cpus = VmConfig(vm).Cpus
-		outputTable.AppendRow([]interface{}{index + 1, vm, vm_status, vm_dataset, vm_cpus})
+		outputTable.AppendRow([]interface{}{index + 1, vm, vm_status, vm_dataset, strconv.Itoa(vm_cpus) + " CPUs"})
 		outputTable.AppendSeparator()
 	}
 
