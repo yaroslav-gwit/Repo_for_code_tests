@@ -157,7 +157,7 @@ func datasetsList() datasetsListStruct {
 		panic(fmt.Errorf("fatal error config file: %w", viper_err))
 	}
 
-	fmt.Println(viper.Get("name"))
+	fmt.Println(viper.Get("datasets"))
 
 	if conf_datasets_error != nil {
 		panic(conf_datasets_error)
