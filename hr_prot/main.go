@@ -63,6 +63,7 @@ func vmList(plain ...bool) vmListStruct {
 	var folder_to_scan string
 	var vm_list = vmListStruct{}
 
+	//Form VM list from all available datasets
 	for _, dataset := range datasetsList_var.Datasets {
 		folder_to_scan = dataset.Mount_path
 		folders, err := ioutil.ReadDir(folder_to_scan)
@@ -77,18 +78,19 @@ func vmList(plain ...bool) vmListStruct {
 			var _, file_exists_error = os.Stat(vm_folder_full_path + "/vm.config")
 			if file_exists_error == nil {
 				vm_list.vmName = append(vm_list.vmName, vm_folder_name)
-				// vm_list.vmDataset = append(vm_list.vmDataset, dataset.Name)
 			}
 
 			var _, new_config_file_exists_error = os.Stat(vm_folder_full_path + "/vm.conf")
 			if new_config_file_exists_error == nil {
 				vm_list.vmName = append(vm_list.vmName, vm_folder_name)
-				// vm_list.vmDataset = append(vm_list.vmDataset, dataset.Name)
 			}
 		}
 	}
+
+	//Sort the VM list
 	natsort.Sort(vm_list.vmName)
 
+	//Form the list of dataset names
 	for _, vm := range vm_list.vmName {
 		for _, dataset := range datasetsList_var.Datasets {
 			folder_to_scan = dataset.Mount_path
