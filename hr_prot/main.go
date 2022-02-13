@@ -17,6 +17,7 @@ type vmConfigStruct struct {
 	Ram         int    `yaml:"ram"`
 	VncPort     int    `yaml:"vnc_port"`
 	VncPassword string `yaml:"vnc_password"`
+	IpAddress   string `yaml:"ip_address"`
 }
 
 func VmConfig(vmname string) vmConfigStruct {
