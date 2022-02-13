@@ -68,6 +68,7 @@ func main() {
 	var vm_os_type string
 	var vm_index int
 	var vm_storage string
+	var vm_misc string
 
 	for index, vm := range vm_list.vmName {
 		vm_index = index + 1
@@ -77,6 +78,7 @@ func main() {
 		vm_vnc = "Port: " + strconv.Itoa(VmConfig(vm).VncPort) + "\nPwd: " + VmConfig(vm).VncPassword
 		vm_networks = VmConfig(vm).Networks[0].InterfaceName + ": " + VmConfig(vm).Networks[0].InterfaceIpAddress
 		vm_storage = VmConfig(vm).Storage[0].DiskName + ": " + VmConfig(vm).Storage[0].DiskLocation
+		vm_misc = "OS: " + vm_os_type + "\nUptime: 00:00"
 
 		// OS Types hot replacement
 		vm_os_type = strings.ReplaceAll(VmConfig(vm).OsType, "debian11", "Debian 11")
@@ -90,7 +92,7 @@ func main() {
 			vm_vnc,
 			vm_networks,
 			vm_storage,
-			"OS: " + vm_os_type})
+			vm_misc})
 		outputTable.AppendSeparator()
 	}
 
