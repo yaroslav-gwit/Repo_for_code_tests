@@ -68,8 +68,6 @@ func main() {
 	var vm_networks string
 	var vm_os_type string
 	var vm_index int
-	// var vm_storage
-	// var vm_storage string
 	var vm_misc string
 
 	for index, vm := range vm_list.vmName {
