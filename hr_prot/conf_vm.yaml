@@ -5,12 +5,12 @@ vnc_password: NakHkX09a7pgZUQoEJzI
 ip_address: 10.0.101.1
 os_type: debian11
 storage:
-  - name: system
-    location: /os/system
-  - name: external
-    location: /nfs/external
+  - disk_name: system
+    disk_location: /os/system
+  - disk_name: external
+    disk_location: /nfs/external
 networks:
-  - name: internal
-    ip_address: 10.1.1.1
-  - name: external
-    ip_address: 1.2.3.4
+  - interface_name: internal
+    interface_ip_address: 10.1.1.1
+  - interface_name: external
+    interface_ip_address: 1.2.3.4

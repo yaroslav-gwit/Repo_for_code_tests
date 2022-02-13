@@ -27,8 +27,8 @@ type vmConfigStruct struct {
 	IpAddress   string `yaml:"ip_address"`
 	OsType      string `yaml:"os_type"`
 	Networks    []struct {
-		Name      string `yaml:"name"`
-		IpAddress string `yaml:"ip_address"`
+		Name      string `yaml:"interface_name"`
+		IpAddress string `yaml:"interface_ip_address"`
 	}
 }
 
