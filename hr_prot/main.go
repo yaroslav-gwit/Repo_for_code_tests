@@ -27,8 +27,12 @@ type vmConfigStruct struct {
 	IpAddress   string `yaml:"ip_address"`
 	OsType      string `yaml:"os_type"`
 	Networks    []struct {
-		Name      string `yaml:"interface_name"`
-		IpAddress string `yaml:"interface_ip_address"`
+		InterfaceName      string `yaml:"interface_name"`
+		InterfaceIpAddress string `yaml:"interface_ip_address"`
+	}
+	Storage []struct {
+		DiskName     string `yaml:"disk_name"`
+		DiskLocation string `yaml:"disk_location"`
 	}
 }
 
@@ -54,6 +58,8 @@ func main() {
 
 	var vm_networks = VmConfig("ddd").Networks
 	fmt.Println(vm_networks)
+	var vm_storage = VmConfig("ddd").Storage
+	fmt.Println(vm_storage)
 
 	var outputTable = table.NewWriter()
 	outputTable.SetOutputMirror(os.Stdout)
