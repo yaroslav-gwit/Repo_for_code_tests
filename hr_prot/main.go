@@ -56,8 +56,6 @@ func VmConfig(vmname string) vmConfigStruct {
 func main() {
 	var vm_list = vmList()
 
-	var vm_networks = VmConfig("ddd").Networks
-	fmt.Println(vm_networks)
 	var vm_storage = VmConfig("ddd").Storage
 	fmt.Println(vm_storage)
 
@@ -67,35 +65,31 @@ func main() {
 
 	var vm_status string
 	var vm_dataset string
-	var vm_cpus int
-	var vm_ram int
-	var vm_vnc_port int
-	var vm_vnc_password string
-	var vm_ip_address string
-	var vm_network_interface string
+	var vm_resources string
+	var vm_vnc string
+	var vm_networks string
 	var vm_os_type string
+	var vm_index int
 
 	for index, vm := range vm_list.vmName {
+		vm_index = index + 1
 		vm_status = vmStatusCheck(vm).vmStatusIcons
 		vm_dataset = vm_list.vmDataset[index]
-		vm_cpus = VmConfig(vm).Cpus
-		vm_ram = VmConfig(vm).Ram
-		vm_vnc_password = VmConfig(vm).VncPassword
-		vm_vnc_port = VmConfig(vm).VncPort
-		vm_ip_address = VmConfig(vm).Networks[0].InterfaceIpAddress
-		vm_network_interface = VmConfig(vm).Networks[0].InterfaceName
+		vm_resources = "CPUs: " + strconv.Itoa(VmConfig(vm).Cpus) + "\nRAM: " + strconv.Itoa(VmConfig(vm).Ram) + "G"
+		vm_vnc = "Port: " + strconv.Itoa(VmConfig(vm).VncPort) + "\nPwd: " + VmConfig(vm).VncPassword
+		vm_networks = VmConfig(vm).Networks[0].InterfaceName + ": " + VmConfig(vm).Networks[0].InterfaceIpAddress
 
 		// OS Types hot replacement
 		vm_os_type = strings.ReplaceAll(VmConfig(vm).OsType, "debian11", "Debian 11")
 
 		outputTable.AppendRow([]interface{}{
-			index + 1,
+			vm_index,
 			vm,
 			vm_status,
 			vm_dataset,
-			"CPUs: " + strconv.Itoa(vm_cpus) + "\nRAM: " + strconv.Itoa(vm_ram) + "G",
-			"Port: " + strconv.Itoa(vm_vnc_port) + "\nPwd: " + vm_vnc_password,
-			vm_network_interface + ": " + vm_ip_address,
+			vm_resources,
+			vm_vnc,
+			vm_networks,
 			"OS: " + vm_os_type})
 		outputTable.AppendSeparator()
 	}
