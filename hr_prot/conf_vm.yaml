@@ -6,7 +6,7 @@ os_type: debian11
 parent_host: hoster-test-0102
 storage:
   - disk_name: system
-    disk_location: /os/system
+    disk_location: /zroot/vm-encrypted/test-vm-1/disk0.img
   - disk_name: external
     disk_location: /nfs/external
 networks:
