@@ -14,6 +14,7 @@ import (
 
 type vmConfigStruct struct {
 	Cpus int `yaml:"cpus"`
+	Ram  int `yaml:"ram"`
 }
 
 func VmConfig(vmname string) vmConfigStruct {
@@ -43,12 +44,14 @@ func main() {
 	var vm_status string
 	var vm_dataset string
 	var vm_cpus int
+	var vm_ram int
 
 	for index, vm := range vm_list.vmName {
 		vm_status = vmStatusCheck(vm).vmStatusIcons
 		vm_dataset = vm_list.vmDataset[index]
 		vm_cpus = VmConfig(vm).Cpus
-		outputTable.AppendRow([]interface{}{index + 1, vm, vm_status, vm_dataset, strconv.Itoa(vm_cpus) + " CPUs"})
+		vm_ram = VmConfig(vm).Ram
+		outputTable.AppendRow([]interface{}{index + 1, vm, vm_status, vm_dataset, strconv.Itoa(vm_cpus) + " CPUs and " + strconv.Itoa(vm_ram) + "G RAM"})
 		outputTable.AppendSeparator()
 	}
 
