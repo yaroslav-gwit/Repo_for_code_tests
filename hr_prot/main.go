@@ -26,6 +26,7 @@ type vmConfigStruct struct {
 	VncPassword string `yaml:"vnc_password"`
 	IpAddress   string `yaml:"ip_address"`
 	OsType      string `yaml:"os_type"`
+	ParentHost  string `yaml:"parent_host"`
 	Networks    []struct {
 		InterfaceName      string `yaml:"interface_name"`
 		InterfaceIpAddress string `yaml:"interface_ip_address"`
@@ -78,7 +79,7 @@ func main() {
 		vm_vnc = "Port: " + strconv.Itoa(VmConfig(vm).VncPort) + "\nPwd: " + VmConfig(vm).VncPassword
 		vm_networks = VmConfig(vm).Networks[0].InterfaceName + ": " + VmConfig(vm).Networks[0].InterfaceIpAddress
 		vm_storage = VmConfig(vm).Storage[0].DiskName + ": " + VmConfig(vm).Storage[0].DiskLocation
-		vm_misc = "OS: " + vm_os_type + "\nUptime: 00:00"
+		vm_misc = "OS: " + vm_os_type + "\nUptime: 00:00" + "\nParent: " + VmConfig(vm).ParentHost
 
 		// OS Types hot replacement
 		vm_os_type = strings.ReplaceAll(VmConfig(vm).OsType, "debian11", "Debian 11")
