@@ -82,7 +82,7 @@ func main() {
 		vm_networks = VmConfig(vm).Networks[0].InterfaceName + ": " + VmConfig(vm).Networks[0].InterfaceIpAddress
 		vm_storage_full_size, _ := os.Stat(VmConfig(vm).Storage[0].DiskLocation)
 		// vm_storage = VmConfig(vm).Storage[0].DiskName + ": "
-		vm_storage := reflect.TypeOf(vm_storage_full_size.Size)
+		vm_storage := reflect.TypeOf(vm_storage_full_size.Size())
 		vm_misc = "OS: " + vm_os_type + "\nUptime: 00:00" + "\nParent: " + VmConfig(vm).ParentHost
 
 		// OS Types hot replacement
