@@ -42,7 +42,7 @@ func main() {
 
 	var outputTable = table.NewWriter()
 	outputTable.SetOutputMirror(os.Stdout)
-	outputTable.AppendHeader(table.Row{"#", "vm name", "status", "dataset", "resources", "vnc"})
+	outputTable.AppendHeader(table.Row{"#", "vm name", "status", "dataset", "resources", "vnc", "ip address"})
 
 	var vm_status string
 	var vm_dataset string
@@ -50,6 +50,7 @@ func main() {
 	var vm_ram int
 	var vm_vnc_port int
 	var vm_vnc_password string
+	var vm_ip_address string
 
 	for index, vm := range vm_list.vmName {
 		vm_status = vmStatusCheck(vm).vmStatusIcons
@@ -58,9 +59,10 @@ func main() {
 		vm_ram = VmConfig(vm).Ram
 		vm_vnc_password = VmConfig(vm).VncPassword
 		vm_vnc_port = VmConfig(vm).VncPort
+		vm_ip_address = VmConfig(vm).IpAddress
 		// outputTable.AppendRow([]interface{}{index + 1, vm, vm_status, vm_dataset, strconv.Itoa(vm_cpus) + " CPUs and " + strconv.Itoa(vm_ram) + "G RAM"})
 		outputTable.AppendRows([]table.Row{
-			{index + 1, vm, vm_status, vm_dataset, "CPUs: " + strconv.Itoa(vm_cpus), "VNC Port: " + strconv.Itoa(vm_vnc_port)},
+			{index + 1, vm, vm_status, vm_dataset, "CPUs: " + strconv.Itoa(vm_cpus), "VNC Port: " + strconv.Itoa(vm_vnc_port), vm_ip_address},
 			{"", "", "", "", "RAM: " + strconv.Itoa(vm_ram) + "G", "VNC Password: " + vm_vnc_password},
 		})
 		outputTable.AppendSeparator()
