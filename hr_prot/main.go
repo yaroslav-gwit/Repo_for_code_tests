@@ -38,15 +38,17 @@ func main() {
 
 	var outputTable = table.NewWriter()
 	outputTable.SetOutputMirror(os.Stdout)
-	outputTable.AppendHeader(table.Row{"#", "vm name", "status", "dataset"})
+	outputTable.AppendHeader(table.Row{"#", "vm name", "status", "dataset", "resources"})
 
-	var vm_status = ""
-	var vm_dataset = ""
+	var vm_status string
+	var vm_dataset string
+	var vm_cpus int
 
 	for index, vm := range vm_list.vmName {
 		vm_status = vmStatusCheck(vm).vmStatusIcons
 		vm_dataset = vm_list.vmDataset[index]
-		outputTable.AppendRow([]interface{}{index + 1, vm, vm_status, vm_dataset})
+		vm_cpus = VmConfig(vm).Cpus
+		outputTable.AppendRow([]interface{}{index + 1, vm, vm_status, vm_dataset, vm_cpus})
 		outputTable.AppendSeparator()
 	}
 
