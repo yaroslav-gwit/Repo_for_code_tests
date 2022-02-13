@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"reflect"
 	"strconv"
 
 	"github.com/facette/natsort"
@@ -35,6 +36,7 @@ type vmStatusCheckStruct struct {
 }
 
 func main() {
+	datasetsViper()
 	var vm_list = vmList()
 
 	var outputTable = table.NewWriter()
@@ -149,8 +151,8 @@ func datasetsList() datasetsListStruct {
 	var conf_datasets_file, conf_datasets_error = os.ReadFile("conf_datasets.yaml")
 
 	viper.SetConfigName("conf_datasets")
-	viper.AddConfigPath("/etc/appname/")
-	viper.AddConfigPath("$HOME/.appname")
+	// viper.AddConfigPath("/etc/appname/")
+	// viper.AddConfigPath("$HOME/.appname")
 	viper.AddConfigPath(".")
 	viper_err := viper.ReadInConfig()
 	if viper_err != nil {
@@ -171,4 +173,21 @@ func datasetsList() datasetsListStruct {
 	}
 
 	return datasetsList_var
+}
+
+func datasetsViper() interface{} {
+	viper.SetConfigName("conf_datasets")
+	// viper.AddConfigPath("/etc/appname/")
+	// viper.AddConfigPath("$HOME/.appname")
+	viper.AddConfigPath(".")
+	viper_err := viper.ReadInConfig()
+	if viper_err != nil {
+		panic(fmt.Errorf("fatal error config file: %w", viper_err))
+	}
+
+	datasetsViper := viper.Get("datasets")
+	fmt.Println(reflect.TypeOf(datasetsViper))
+	fmt.Println(datasetsViper)
+
+	return datasetsViper
 }
