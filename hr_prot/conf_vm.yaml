@@ -4,3 +4,8 @@ vnc_port: 5900
 vnc_password: NakHkX09a7pgZUQoEJzI
 ip_address: 10.0.101.1
 os_type: debian11
+networks:
+  - name: internal
+    ip_address: 10.1.1.1
+  - name: external
+    ip_address: 1.2.3.4

@@ -14,6 +14,9 @@ import (
 )
 
 type storageStruct struct {
+	DiskSize  int
+	DiskFreeG int
+	DiskFreeP int
 }
 
 type vmConfigStruct struct {
@@ -23,6 +26,10 @@ type vmConfigStruct struct {
 	VncPassword string `yaml:"vnc_password"`
 	IpAddress   string `yaml:"ip_address"`
 	OsType      string `yaml:"os_type"`
+	Networks    []struct {
+		Name      string `yaml:"name"`
+		IpAddress string `yaml:"ip_address"`
+	}
 }
 
 func VmConfig(vmname string) vmConfigStruct {
@@ -44,6 +51,9 @@ func VmConfig(vmname string) vmConfigStruct {
 
 func main() {
 	var vm_list = vmList()
+
+	var vm_networks = VmConfig("ddd").Networks
+	fmt.Println(vm_networks)
 
 	var outputTable = table.NewWriter()
 	outputTable.SetOutputMirror(os.Stdout)
