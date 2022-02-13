@@ -77,17 +77,27 @@ func vmList(plain ...bool) vmListStruct {
 			var _, file_exists_error = os.Stat(vm_folder_full_path + "/vm.config")
 			if file_exists_error == nil {
 				vm_list.vmName = append(vm_list.vmName, vm_folder_name)
-				vm_list.vmDataset = append(vm_list.vmDataset, dataset.Name)
+				// vm_list.vmDataset = append(vm_list.vmDataset, dataset.Name)
 			}
 
 			var _, new_config_file_exists_error = os.Stat(vm_folder_full_path + "/vm.conf")
 			if new_config_file_exists_error == nil {
 				vm_list.vmName = append(vm_list.vmName, vm_folder_name)
-				vm_list.vmDataset = append(vm_list.vmDataset, dataset.Name)
+				// vm_list.vmDataset = append(vm_list.vmDataset, dataset.Name)
 			}
 		}
 	}
 	natsort.Sort(vm_list.vmName)
+
+	for _, vm := range vm_list.vmName {
+		for _, dataset := range datasetsList_var.Datasets {
+			folder_to_scan = dataset.Mount_path
+			var _, vm_in_dataset_error = os.Stat(folder_to_scan + vm)
+			if vm_in_dataset_error != nil {
+				vm_list.vmDataset = append(vm_list.vmDataset, dataset.Name)
+			}
+		}
+	}
 
 	return vm_list
 }
