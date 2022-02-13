@@ -93,7 +93,7 @@ func vmList(plain ...bool) vmListStruct {
 		for _, dataset := range datasetsList_var.Datasets {
 			folder_to_scan = dataset.Mount_path
 			var _, vm_in_dataset_error = os.Stat(folder_to_scan + vm)
-			if vm_in_dataset_error != nil {
+			if vm_in_dataset_error == nil {
 				vm_list.vmDataset = append(vm_list.vmDataset, dataset.Name)
 			}
 		}
