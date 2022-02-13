@@ -83,7 +83,9 @@ func main() {
 		// vm_storage_full_size, _ := os.Stat(VmConfig(vm).Storage[0].DiskLocation)
 		// vm_storage = VmConfig(vm).Storage[0].DiskName + ": "
 		// vm_storage := vm_storage_full_size.Size()
-		vm_storage := du.NewDiskUsage(VmConfig(vm).Storage[0].DiskLocation).Used()
+		vm_disk_location := VmConfig(vm).Storage[0].DiskLocation
+		usage := du.NewDiskUsage(vm_disk_location)
+		vm_storage := usage.Used()
 		vm_misc = "OS: " + vm_os_type + "\nUptime: 00:00" + "\nParent: " + VmConfig(vm).ParentHost
 
 		// OS Types hot replacement
