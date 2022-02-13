@@ -12,25 +12,25 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-type datasetsListStruct struct {
-	Datasets []struct {
-		Name       string `yaml:"name"`
-		Mount_path string `yaml:"mount_path"`
-		Zfs_path   string `yaml:"zfs_path"`
-		Encrypted  bool   `yaml:"encrypted"`
-		Type       string `yaml:"type"`
+type vmConfigStruct struct {
+	Cpus int `yaml:"cpus"`
+}
+
+func VmConfig(vmname string) vmConfigStruct {
+	var conf_vm_file, conf_vm_error = os.ReadFile("conf_vm.yaml")
+
+	if conf_vm_error != nil {
+		panic(conf_vm_error)
 	}
-}
 
-type vmListStruct struct {
-	vmName    []string
-	vmDataset []string
-}
+	var vmConfigStruct_var vmConfigStruct
 
-type vmStatusCheckStruct struct {
-	vmLive        bool
-	vmEncrypted   bool
-	vmStatusIcons string
+	err := yaml.Unmarshal([]byte(conf_vm_file), &vmConfigStruct_var)
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
+	return vmConfigStruct_var
 }
 
 func main() {
@@ -56,6 +56,11 @@ func main() {
 	fmt.Println("VM List")
 	outputTable.SetStyle(table.StyleLight)
 	outputTable.Render()
+}
+
+type vmListStruct struct {
+	vmName    []string
+	vmDataset []string
 }
 
 func vmList(plain ...bool) vmListStruct {
@@ -104,6 +109,12 @@ func vmList(plain ...bool) vmListStruct {
 	return vm_list
 }
 
+type vmStatusCheckStruct struct {
+	vmLive        bool
+	vmEncrypted   bool
+	vmStatusIcons string
+}
+
 func vmStatusCheck(vmname string) vmStatusCheckStruct {
 	//VM status icons
 	const vm_is_live = "🟢"
@@ -142,6 +153,16 @@ func vmStatusCheck(vmname string) vmStatusCheckStruct {
 
 	vmStatusCheckStruct_var.vmStatusIcons = vmStatusIcons
 	return vmStatusCheckStruct_var
+}
+
+type datasetsListStruct struct {
+	Datasets []struct {
+		Name       string `yaml:"name"`
+		Mount_path string `yaml:"mount_path"`
+		Zfs_path   string `yaml:"zfs_path"`
+		Encrypted  bool   `yaml:"encrypted"`
+		Type       string `yaml:"type"`
+	}
 }
 
 func datasetsList() datasetsListStruct {
