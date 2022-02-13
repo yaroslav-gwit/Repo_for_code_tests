@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -85,6 +84,11 @@ func main() {
 		//Storage
 		vm_storage_full_size, _ := os.Stat(VmConfig(vm).Storage[0].DiskLocation)
 		vm_storage_provisioned := vm_storage_full_size.Size()
+		cmd := "du /zroot/vm-encrypted/test-vm-1/disk0.img | awk '{ print $1 }'"
+		var out, _ = exec.Command("bash", "-c", cmd).Output()
+		vm_storage_used_ := strings.ReplaceAll(string(out), "\n", "")
+		vm_storage_used, _ := strconv.Atoi(vm_storage_used_)
+		vm_storage := strconv.Itoa(int(vm_storage_provisioned)) + " " + strconv.Itoa(vm_storage_used)
 
 		// OS Types hot replacement
 		vm_os_type = strings.ReplaceAll(VmConfig(vm).OsType, "debian11", "Debian 11")
@@ -97,18 +101,13 @@ func main() {
 			vm_resources,
 			vm_vnc,
 			vm_networks,
-			vm_storage_provisioned,
+			vm_storage,
 			vm_misc})
 		outputTable.AppendSeparator()
 	}
 
 	var total_number_of_vms = strconv.Itoa(len(vm_list.vmName))
 	outputTable.AppendFooter(table.Row{"", "total vms: " + total_number_of_vms})
-
-	cmd := "du /zroot/vm-encrypted/test-vm-1/disk0.img | awk '{ print $1 }'"
-	var out, _ = exec.Command("bash", "-c", cmd).Output()
-	var output = strings.ReplaceAll(string(out), "\n", "")
-	fmt.Println(output)
 	outputTable.SetStyle(table.StyleLight)
 	outputTable.Render()
 }
