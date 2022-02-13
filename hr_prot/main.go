@@ -56,12 +56,9 @@ func VmConfig(vmname string) vmConfigStruct {
 func main() {
 	var vm_list = vmList()
 
-	var vm_storage = VmConfig("ddd").Storage
-	fmt.Println(vm_storage)
-
 	var outputTable = table.NewWriter()
 	outputTable.SetOutputMirror(os.Stdout)
-	outputTable.AppendHeader(table.Row{"#", "vm name", "status", "dataset", "resources", "vnc", "networks", "misc"})
+	outputTable.AppendHeader(table.Row{"#", "vm name", "status", "dataset", "resources", "vnc", "networks", "storage", "misc"})
 
 	var vm_status string
 	var vm_dataset string
@@ -70,6 +67,7 @@ func main() {
 	var vm_networks string
 	var vm_os_type string
 	var vm_index int
+	var vm_storage string
 
 	for index, vm := range vm_list.vmName {
 		vm_index = index + 1
@@ -78,6 +76,7 @@ func main() {
 		vm_resources = "CPUs: " + strconv.Itoa(VmConfig(vm).Cpus) + "\nRAM: " + strconv.Itoa(VmConfig(vm).Ram) + "G"
 		vm_vnc = "Port: " + strconv.Itoa(VmConfig(vm).VncPort) + "\nPwd: " + VmConfig(vm).VncPassword
 		vm_networks = VmConfig(vm).Networks[0].InterfaceName + ": " + VmConfig(vm).Networks[0].InterfaceIpAddress
+		vm_storage = VmConfig(vm).Storage[0].DiskName + ": " + VmConfig(vm).Storage[0].DiskLocation
 
 		// OS Types hot replacement
 		vm_os_type = strings.ReplaceAll(VmConfig(vm).OsType, "debian11", "Debian 11")
@@ -90,6 +89,7 @@ func main() {
 			vm_resources,
 			vm_vnc,
 			vm_networks,
+			vm_storage,
 			"OS: " + vm_os_type})
 		outputTable.AppendSeparator()
 	}
