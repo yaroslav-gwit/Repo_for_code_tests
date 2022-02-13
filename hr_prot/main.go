@@ -47,7 +47,7 @@ func main() {
 
 	var outputTable = table.NewWriter()
 	outputTable.SetOutputMirror(os.Stdout)
-	outputTable.AppendHeader(table.Row{"#", "vm name", "status", "dataset", "resources", "vnc", "ip address", "Misc"})
+	outputTable.AppendHeader(table.Row{"#", "vm name", "status", "dataset", "resources", "vnc", "networks", "misc"})
 
 	var vm_status string
 	var vm_dataset string
@@ -69,6 +69,7 @@ func main() {
 
 		// OS Types hot replacement
 		vm_os_type = strings.ReplaceAll(VmConfig(vm).OsType, "debian11", "Debian 11")
+
 		outputTable.AppendRow([]interface{}{
 			index + 1,
 			vm,
@@ -78,10 +79,6 @@ func main() {
 			"VNC Port: " + strconv.Itoa(vm_vnc_port) + "\nVNC Password: " + vm_vnc_password,
 			vm_ip_address,
 			"OS: " + vm_os_type})
-		// outputTable.AppendRows([]table.Row{
-		// 	{index + 1, vm, vm_status, vm_dataset, "CPUs: " + strconv.Itoa(vm_cpus), "VNC Port: " + strconv.Itoa(vm_vnc_port), vm_ip_address, "OS: " + vm_os_type},
-		// 	{"", "", "", "", "RAM: " + strconv.Itoa(vm_ram) + "G", "VNC Password: " + vm_vnc_password},
-		// })
 		outputTable.AppendSeparator()
 	}
 
