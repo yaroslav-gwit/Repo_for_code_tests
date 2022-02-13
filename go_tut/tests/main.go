@@ -2,36 +2,45 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"os"
+	"reflect"
 
-	"gopkg.in/yaml.v2"
+	"github.com/spf13/viper"
 )
 
-type datasetZfs struct {
+type BlaBla []interface {
+	datasetsViperInterface()
+}
+
+type datasetsListStruct struct {
 	Datasets []struct {
-		Name       string `yaml:"name"`
-		Mount_path string `yaml:"mount_path"`
-		Zfs_path   string `yaml:"zfs_path"`
-		Encrypted  bool   `yaml:"encrypted"`
+		Name       string
+		Mount_path string
+		Zfs_path   string
+		Encrypted  bool
+		Type       string
 	}
 }
 
 func main() {
-	var conf_datasets_file, conf_datasets_error = os.ReadFile("conf_datasets.yaml")
+	datasetsViper()
+}
 
-	if conf_datasets_error != nil {
-		panic(conf_datasets_error)
+func datasetsViper() interface{} {
+	viper.SetConfigName("conf_datasets")
+	// viper.AddConfigPath("/etc/appname/")
+	// viper.AddConfigPath("$HOME/.appname")
+	viper.AddConfigPath(".")
+	viper_err := viper.ReadInConfig()
+	if viper_err != nil {
+		panic(fmt.Errorf("fatal error config file: %w", viper_err))
 	}
 
-	var datasetZfs_var = datasetZfs{}
+	datasetsViper := viper.Get("datasets")
 
-	err := yaml.Unmarshal([]byte(conf_datasets_file), &datasetZfs_var)
-	if err != nil {
-		log.Fatalf("error: %v", err)
-	}
+	fmt.Println(reflect.TypeOf(datasetsViper))
+	fmt.Println(datasetsViper)
 
-	for _, dataset := range datasetZfs_var.Datasets {
-		fmt.Println(dataset.Mount_path)
-	}
+	viper.WriteConfigAs("./viper_config.yaml")
+
+	return datasetsViper
 }

@@ -5,12 +5,10 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"reflect"
 	"strconv"
 
 	"github.com/facette/natsort"
 	"github.com/jedib0t/go-pretty/v6/table"
-	"github.com/spf13/viper"
 	"gopkg.in/yaml.v2"
 )
 
@@ -36,7 +34,6 @@ type vmStatusCheckStruct struct {
 }
 
 func main() {
-	datasetsViper()
 	var vm_list = vmList()
 
 	var outputTable = table.NewWriter()
@@ -162,22 +159,4 @@ func datasetsList() datasetsListStruct {
 	}
 
 	return datasetsList_var
-}
-
-func datasetsViper() interface{} {
-	viper.SetConfigName("conf_datasets")
-	// viper.AddConfigPath("/etc/appname/")
-	// viper.AddConfigPath("$HOME/.appname")
-	viper.AddConfigPath(".")
-	viper_err := viper.ReadInConfig()
-	if viper_err != nil {
-		panic(fmt.Errorf("fatal error config file: %w", viper_err))
-	}
-
-	datasetsViper := viper.GetStringMapStringSlice("datasets")
-
-	fmt.Println(reflect.TypeOf(datasetsViper))
-	fmt.Println(datasetsViper)
-
-	return datasetsViper
 }
