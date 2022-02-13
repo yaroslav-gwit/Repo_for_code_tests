@@ -90,7 +90,7 @@ func main() {
 		vm_storage_used_ := strings.ReplaceAll(string(out), "\n", "")
 		vm_storage_used, _ := strconv.Atoi(vm_storage_used_)
 		vm_storage_used = vm_storage_used / 1024 / 1024
-		vm_storage := strconv.Itoa(vm_storage_used) + "G/" + strconv.Itoa(int(vm_storage_provisioned)) + "G"
+		vm_storage := VmConfig(vm).Storage[0].DiskName + strconv.Itoa(vm_storage_used) + "G/" + strconv.Itoa(int(vm_storage_provisioned)) + "G"
 
 		// OS Types hot replacement
 		vm_os_type = strings.ReplaceAll(VmConfig(vm).OsType, "debian11", "Debian 11")

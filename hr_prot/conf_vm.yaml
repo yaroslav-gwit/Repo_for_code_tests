@@ -5,12 +5,8 @@ vnc_password: NakHkX09a7pgZUQoEJzI
 os_type: debian11
 parent_host: hoster-test-0102
 storage:
-  - disk_name: system
+  - disk_name: os
     disk_location: /zroot/vm-encrypted/test-vm-1/disk0.img
-  - disk_name: external
-    disk_location: /nfs/external
 networks:
   - interface_name: internal
     interface_ip_address: 10.1.1.1
-  - interface_name: external
-    interface_ip_address: 1.2.3.4
