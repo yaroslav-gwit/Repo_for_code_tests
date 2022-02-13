@@ -164,7 +164,7 @@ func datasetsList() datasetsListStruct {
 	return datasetsList_var
 }
 
-func datasetsViper() interface{} {
+func datasetsViper() []interface{} {
 	viper.SetConfigName("conf_datasets")
 	// viper.AddConfigPath("/etc/appname/")
 	// viper.AddConfigPath("$HOME/.appname")
@@ -174,7 +174,13 @@ func datasetsViper() interface{} {
 		panic(fmt.Errorf("fatal error config file: %w", viper_err))
 	}
 
-	datasetsViper := viper.Get("datasets")
+	var datasetsViper []interface{}
+	datasetsViper = append(datasetsViper, viper.Get("datasets"))
+
+	for _, data := range datasetsViper {
+		fmt.Println(data)
+	}
+
 	fmt.Println(reflect.TypeOf(datasetsViper))
 	fmt.Println(datasetsViper)
 
