@@ -91,7 +91,8 @@ func main() {
 		vm_storage := VmConfig(vm).Storage[0].DiskName + ": " + strconv.Itoa(vm_storage_used) + "G/" + strconv.Itoa(int(vm_storage_provisioned)) + "G"
 
 		// OS Types hot replacement
-		vm_os_type = strings.ReplaceAll(VmConfig(vm).OsType, "debian11", "Debian 11")
+		vm_os_type = VmConfig(vm).OsType
+		vm_os_type = strings.ReplaceAll(vm_os_type, "debian11", "Debian 11")
 
 		outputTable.AppendRow([]interface{}{
 			vm_index,
