@@ -150,17 +150,6 @@ func vmStatusCheck(vmname string) vmStatusCheckStruct {
 func datasetsList() datasetsListStruct {
 	var conf_datasets_file, conf_datasets_error = os.ReadFile("conf_datasets.yaml")
 
-	viper.SetConfigName("conf_datasets")
-	// viper.AddConfigPath("/etc/appname/")
-	// viper.AddConfigPath("$HOME/.appname")
-	viper.AddConfigPath(".")
-	viper_err := viper.ReadInConfig()
-	if viper_err != nil {
-		panic(fmt.Errorf("fatal error config file: %w", viper_err))
-	}
-
-	fmt.Println(viper.Get("datasets"))
-
 	if conf_datasets_error != nil {
 		panic(conf_datasets_error)
 	}
