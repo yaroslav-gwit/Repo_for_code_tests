@@ -19,7 +19,7 @@ type vmConfigStruct struct {
 	VncPort     int    `yaml:"vnc_port"`
 	VncPassword string `yaml:"vnc_password"`
 	IpAddress   string `yaml:"ip_address"`
-	OsType      string `yaml:"debian11"`
+	OsType      string `yaml:"os_type"`
 }
 
 func VmConfig(vmname string) vmConfigStruct {
