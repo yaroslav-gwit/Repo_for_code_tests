@@ -72,7 +72,6 @@ func main() {
 	// var vm_storage
 	// var vm_storage string
 	var vm_misc string
-	var stdout []byte
 
 	for index, vm := range vm_list.vmName {
 		vm_index = index + 1
@@ -86,9 +85,6 @@ func main() {
 		//Storage
 		vm_storage_full_size, _ := os.Stat(VmConfig(vm).Storage[0].DiskLocation)
 		vm_storage_provisioned := vm_storage_full_size.Size()
-		command_ := "du /zroot/vm-encrypted/test-vm-1/disk0.img | awk '{ print $1 }'"
-		command := exec.Command("bash", "-c", command_)
-		stdout, _ = command.Output()
 
 		// OS Types hot replacement
 		vm_os_type = strings.ReplaceAll(VmConfig(vm).OsType, "debian11", "Debian 11")
@@ -109,7 +105,10 @@ func main() {
 	var total_number_of_vms = strconv.Itoa(len(vm_list.vmName))
 	outputTable.AppendFooter(table.Row{"", "total vms: " + total_number_of_vms})
 
-	fmt.Println(stdout)
+	cmd := "du /zroot/vm-encrypted/test-vm-1/disk0.img | awk '{ print $1 }'"
+	var out, _ = exec.Command("bash", "-c", cmd).Output()
+	var output = strings.ReplaceAll(string(out), "\n", "")
+	fmt.Println(output)
 	outputTable.SetStyle(table.StyleLight)
 	outputTable.Render()
 }
