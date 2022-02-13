@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/facette/natsort"
 	"github.com/jedib0t/go-pretty/v6/table"
@@ -18,6 +19,7 @@ type vmConfigStruct struct {
 	VncPort     int    `yaml:"vnc_port"`
 	VncPassword string `yaml:"vnc_password"`
 	IpAddress   string `yaml:"ip_address"`
+	OsType      string `yaml:"debian11"`
 }
 
 func VmConfig(vmname string) vmConfigStruct {
@@ -42,7 +44,7 @@ func main() {
 
 	var outputTable = table.NewWriter()
 	outputTable.SetOutputMirror(os.Stdout)
-	outputTable.AppendHeader(table.Row{"#", "vm name", "status", "dataset", "resources", "vnc", "ip address"})
+	outputTable.AppendHeader(table.Row{"#", "vm name", "status", "dataset", "resources", "vnc", "ip address", "OS"})
 
 	var vm_status string
 	var vm_dataset string
@@ -51,6 +53,7 @@ func main() {
 	var vm_vnc_port int
 	var vm_vnc_password string
 	var vm_ip_address string
+	var vm_os_type string
 
 	for index, vm := range vm_list.vmName {
 		vm_status = vmStatusCheck(vm).vmStatusIcons
@@ -60,9 +63,12 @@ func main() {
 		vm_vnc_password = VmConfig(vm).VncPassword
 		vm_vnc_port = VmConfig(vm).VncPort
 		vm_ip_address = VmConfig(vm).IpAddress
+
+		//OS Types hot replacement
+		vm_os_type = strings.ReplaceAll(VmConfig(vm).OsType, "debian11", "Debian 11")
 		// outputTable.AppendRow([]interface{}{index + 1, vm, vm_status, vm_dataset, strconv.Itoa(vm_cpus) + " CPUs and " + strconv.Itoa(vm_ram) + "G RAM"})
 		outputTable.AppendRows([]table.Row{
-			{index + 1, vm, vm_status, vm_dataset, "CPUs: " + strconv.Itoa(vm_cpus), "VNC Port: " + strconv.Itoa(vm_vnc_port), vm_ip_address},
+			{index + 1, vm, vm_status, vm_dataset, "CPUs: " + strconv.Itoa(vm_cpus), "VNC Port: " + strconv.Itoa(vm_vnc_port), vm_ip_address, vm_os_type},
 			{"", "", "", "", "RAM: " + strconv.Itoa(vm_ram) + "G", "VNC Password: " + vm_vnc_password},
 		})
 		outputTable.AppendSeparator()
