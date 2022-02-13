@@ -76,7 +76,7 @@ func main() {
 			vm_status,
 			vm_dataset,
 			"CPUs: " + strconv.Itoa(vm_cpus) + "\nRAM: " + strconv.Itoa(vm_ram) + "G",
-			"VNC Port: " + strconv.Itoa(vm_vnc_port) + "\nVNC Password: " + vm_vnc_password,
+			"Port: " + strconv.Itoa(vm_vnc_port) + "\nPwd: " + vm_vnc_password,
 			vm_ip_address,
 			"OS: " + vm_os_type})
 		outputTable.AppendSeparator()
