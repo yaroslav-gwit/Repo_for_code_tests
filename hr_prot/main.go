@@ -5,12 +5,12 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"os/exec"
 	"strconv"
 	"strings"
 
 	"github.com/facette/natsort"
 	"github.com/jedib0t/go-pretty/v6/table"
-	"github.com/ricochet2200/go-disk-usage/du"
 	"gopkg.in/yaml.v2"
 )
 
@@ -72,6 +72,7 @@ func main() {
 	// var vm_storage
 	// var vm_storage string
 	var vm_misc string
+	var stdout []byte
 
 	for index, vm := range vm_list.vmName {
 		vm_index = index + 1
@@ -80,13 +81,14 @@ func main() {
 		vm_resources = "CPUs: " + strconv.Itoa(VmConfig(vm).Cpus) + "\nRAM: " + strconv.Itoa(VmConfig(vm).Ram) + "G"
 		vm_vnc = "Port: " + strconv.Itoa(VmConfig(vm).VncPort) + "\nPwd: " + VmConfig(vm).VncPassword
 		vm_networks = VmConfig(vm).Networks[0].InterfaceName + ": " + VmConfig(vm).Networks[0].InterfaceIpAddress
-		// vm_storage_full_size, _ := os.Stat(VmConfig(vm).Storage[0].DiskLocation)
-		// vm_storage = VmConfig(vm).Storage[0].DiskName + ": "
-		// vm_storage := vm_storage_full_size.Size()
-		vm_disk_location := VmConfig(vm).Storage[0].DiskLocation
-		usage := du.NewDiskUsage(vm_disk_location)
-		vm_storage := usage.Used()
 		vm_misc = "OS: " + vm_os_type + "\nUptime: 00:00" + "\nParent: " + VmConfig(vm).ParentHost
+
+		//Storage
+		vm_storage_full_size, _ := os.Stat(VmConfig(vm).Storage[0].DiskLocation)
+		vm_storage_provisioned := vm_storage_full_size.Size()
+		command_ := "du /zroot/vm-encrypted/test-vm-1/disk0.img | awk '{ print $1 }'"
+		command := exec.Command("bash", "-c", command_)
+		stdout, _ = command.Output()
 
 		// OS Types hot replacement
 		vm_os_type = strings.ReplaceAll(VmConfig(vm).OsType, "debian11", "Debian 11")
@@ -99,7 +101,7 @@ func main() {
 			vm_resources,
 			vm_vnc,
 			vm_networks,
-			vm_storage,
+			vm_storage_provisioned,
 			vm_misc})
 		outputTable.AppendSeparator()
 	}
@@ -107,7 +109,7 @@ func main() {
 	var total_number_of_vms = strconv.Itoa(len(vm_list.vmName))
 	outputTable.AppendFooter(table.Row{"", "total vms: " + total_number_of_vms})
 
-	fmt.Println("VM List")
+	fmt.Println(stdout)
 	outputTable.SetStyle(table.StyleLight)
 	outputTable.Render()
 }
