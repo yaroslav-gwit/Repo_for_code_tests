@@ -72,6 +72,7 @@ func main() {
 	var vm_vnc_port int
 	var vm_vnc_password string
 	var vm_ip_address string
+	var vm_network_interface string
 	var vm_os_type string
 
 	for index, vm := range vm_list.vmName {
@@ -81,7 +82,8 @@ func main() {
 		vm_ram = VmConfig(vm).Ram
 		vm_vnc_password = VmConfig(vm).VncPassword
 		vm_vnc_port = VmConfig(vm).VncPort
-		vm_ip_address = VmConfig(vm).IpAddress
+		vm_ip_address = VmConfig(vm).Networks[0].InterfaceIpAddress
+		vm_network_interface = VmConfig(vm).Networks[0].InterfaceName
 
 		// OS Types hot replacement
 		vm_os_type = strings.ReplaceAll(VmConfig(vm).OsType, "debian11", "Debian 11")
@@ -93,7 +95,7 @@ func main() {
 			vm_dataset,
 			"CPUs: " + strconv.Itoa(vm_cpus) + "\nRAM: " + strconv.Itoa(vm_ram) + "G",
 			"Port: " + strconv.Itoa(vm_vnc_port) + "\nPwd: " + vm_vnc_password,
-			vm_ip_address,
+			vm_network_interface + ": " + vm_ip_address,
 			"OS: " + vm_os_type})
 		outputTable.AppendSeparator()
 	}
