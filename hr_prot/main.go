@@ -174,7 +174,7 @@ func datasetsViper() interface{} {
 		panic(fmt.Errorf("fatal error config file: %w", viper_err))
 	}
 
-	datasetsViper := viper.AllSettings()
+	datasetsViper := viper.Get("datasets")
 
 	fmt.Println(reflect.TypeOf(datasetsViper))
 	fmt.Println(datasetsViper)
