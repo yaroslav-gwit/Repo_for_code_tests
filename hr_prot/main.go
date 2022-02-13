@@ -13,8 +13,10 @@ import (
 )
 
 type vmConfigStruct struct {
-	Cpus int `yaml:"cpus"`
-	Ram  int `yaml:"ram"`
+	Cpus        int    `yaml:"cpus"`
+	Ram         int    `yaml:"ram"`
+	VncPort     int    `yaml:"vnc_port"`
+	VncPassword string `yaml:"vnc_password"`
 }
 
 func VmConfig(vmname string) vmConfigStruct {
@@ -45,16 +47,20 @@ func main() {
 	var vm_dataset string
 	var vm_cpus int
 	var vm_ram int
+	var vm_vnc_port int
+	var vm_vnc_password string
 
 	for index, vm := range vm_list.vmName {
 		vm_status = vmStatusCheck(vm).vmStatusIcons
 		vm_dataset = vm_list.vmDataset[index]
 		vm_cpus = VmConfig(vm).Cpus
 		vm_ram = VmConfig(vm).Ram
-		outputTable.AppendRow([]interface{}{index + 1, vm, vm_status, vm_dataset, strconv.Itoa(vm_cpus) + " CPUs and " + strconv.Itoa(vm_ram) + "G RAM"})
+		vm_vnc_password = VmConfig(vm).VncPassword
+		vm_vnc_port = VmConfig(vm).VncPort
+		// outputTable.AppendRow([]interface{}{index + 1, vm, vm_status, vm_dataset, strconv.Itoa(vm_cpus) + " CPUs and " + strconv.Itoa(vm_ram) + "G RAM"})
 		outputTable.AppendRows([]table.Row{
-			{index + 1, vm, vm_status, vm_dataset, "CPUs: " + strconv.Itoa(vm_cpus)},
-			{"", "", "", "", "RAM: " + strconv.Itoa(vm_ram) + "G"},
+			{index + 1, vm, vm_status, vm_dataset, "CPUs: " + strconv.Itoa(vm_cpus), "VNC Port: " + strconv.Itoa(vm_vnc_port)},
+			{"", "", "", "", "RAM: " + strconv.Itoa(vm_ram) + "G", "VNC Password: " + vm_vnc_password},
 		})
 		outputTable.AppendSeparator()
 	}

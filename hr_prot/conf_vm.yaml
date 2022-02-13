@@ -1,2 +1,4 @@
 cpus: 2
 ram: 2
+vnc_port: 5900
+vnc_password: NakHkX09a7pgZUQoEJzI
