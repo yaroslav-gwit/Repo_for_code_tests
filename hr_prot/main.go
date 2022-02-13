@@ -151,7 +151,7 @@ func datasetsList() datasetsListStruct {
 		panic(conf_datasets_error)
 	}
 
-	var datasetsList_var = datasetsListStruct{}
+	var datasetsList_var datasetsListStruct
 
 	err := yaml.Unmarshal([]byte(conf_datasets_file), &datasetsList_var)
 	if err != nil {
