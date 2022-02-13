@@ -52,6 +52,10 @@ func main() {
 		vm_cpus = VmConfig(vm).Cpus
 		vm_ram = VmConfig(vm).Ram
 		outputTable.AppendRow([]interface{}{index + 1, vm, vm_status, vm_dataset, strconv.Itoa(vm_cpus) + " CPUs and " + strconv.Itoa(vm_ram) + "G RAM"})
+		outputTable.AppendRows([]table.Row{
+			{index + 1, vm, vm_status, vm_dataset, "CPUs: " + strconv.Itoa(vm_cpus)},
+			{"", "", "", "", "RAM: " + strconv.Itoa(vm_ram) + "G"},
+		})
 		outputTable.AppendSeparator()
 	}
 
