@@ -1,12 +1,30 @@
 cpus: 2
 ram: 2
-vnc_port: 5900
-vnc_password: NakHkX09a7pgZUQoEJzI
+loader: uefi
+live_status: production
 os_type: debian11
 parent_host: hoster-test-0102
+vnc_port: 5900
+vnc_password: NakHkX09a7pgZUQoEJzI
+owner: Yaroslav
+use_host_ssh_keys: yes
+autostart: yes
+description: "-"
 storage:
   - disk_name: os
-    disk_location: /zroot/vm-encrypted/test-vm-1/disk0.img
+    disk_type: image
+    disk_drive_type: virtio-blk
+    disk_folder: /zroot/vm-encrypted/test-vm-1/
+    disk_image: disk0.img
+isos:
+  - iso_name: cloud-init-iso
+    iso_drive_type: ahci-cd
+    iso_folder: /zroot/vm-encrypted/test-vm-1/
+    iso_image: seed.iso
 networks:
   - interface_name: internal
+    interface_type: virtio-net
     interface_ip_address: 10.1.1.1
+ssh_keys:
+  - key_name: owner
+    key_value: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDvZbo8t8qSdcHZjCiRi0fVoGBHDXJVPYR+OynuxFc+Sle45xMfRiKjRwHnzBnUqTTppsE2wnLTxVMLfrV4Fqnx8irnr+Rll+YvfMPtCpwcR/Zxlu/zHXK+YUbKIOx0/qKJqfsJ8PaZffob7rGoIBgko8fO7iPd0Y5MK1T+uoVQnFRJMAr6RLlz1oMEppdWsEA2pTUhM6mUj57yqwmIznHIYjy44qIWauqOyR7NB9NV7ahxYh/K6lQtcHqxb9l3AE/dfV/RPAv5CDIEGhs1oCHN/1o1iKoKZKOGZJbn02tGNqA+8XUcKiT1Wh82fGhU6GKj/CWqhs0RNpjp12ETGabPzWEZ12OP6GkoIFmkQEFgdpq3fUlCcb1uRAywOncoCLN8njcMGyUMBR9lB+yWDrSY7psTjHGPGb7+nEl+4NvZB1Dhqci6lGYgO0/DS71UVPs8LTEcrqa18ir0yjcIvhEgc/IbPbnySMSm33PpIKHvartqmuIdo8d3kwFbuMDRWBk=
