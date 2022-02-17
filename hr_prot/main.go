@@ -84,6 +84,7 @@ func main() {
 		// OS Types hot replacement
 		vm_os_type = VmConfig(vm).OsType
 		vm_os_type = strings.ReplaceAll(vm_os_type, "debian11", "Debian 11")
+		vm_os_type = strings.ReplaceAll(vm_os_type, "freebsd13ufs", "FreeBSD 13 UFS")
 
 		vm_index = index + 1
 		vm_status = vmStatusCheck(vm).vmStatusIcons
