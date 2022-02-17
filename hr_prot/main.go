@@ -32,8 +32,11 @@ type vmConfigStruct struct {
 		InterfaceIpAddress string `yaml:"interface_ip_address"`
 	}
 	Storage []struct {
-		DiskName     string `yaml:"disk_name"`
-		DiskLocation string `yaml:"disk_location"`
+		DiskName      string `yaml:"disk_name"`
+		DiskType      string `yaml:"disk_type"`
+		DiskDriveType string `yaml:"disk_drive_type"`
+		DiskFolder    string `yaml:"disk_folder"`
+		DiskImage     string `yaml:"disk_image"`
 	}
 }
 
@@ -84,10 +87,11 @@ func main() {
 		vm_misc = "OS: " + vm_os_type + "\nUptime: 00:00" + "\nParent: " + VmConfig(vm).ParentHost
 
 		//Storage
-		vm_storage_full_size, _ := os.Stat(VmConfig(vm).Storage[0].DiskLocation)
+		vm_disk_location := VmConfig(vm).Storage[0].DiskFolder + VmConfig(vm).Storage[0].DiskImage
+		vm_storage_full_size, _ := os.Stat(vm_disk_location)
 		vm_storage_provisioned := vm_storage_full_size.Size()
 		vm_storage_provisioned = vm_storage_provisioned / 1024 / 1024 / 1024
-		cmd := "du " + VmConfig(vm).Storage[0].DiskLocation + " | awk '{ print $1 }'"
+		cmd := "du " + vm_disk_location + " | awk '{ print $1 }'"
 		var out, _ = exec.Command("bash", "-c", cmd).Output()
 		vm_storage_used_ := strings.ReplaceAll(string(out), "\n", "")
 		vm_storage_used, _ := strconv.Atoi(vm_storage_used_)
