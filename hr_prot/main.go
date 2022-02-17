@@ -41,10 +41,17 @@ type vmConfigStruct struct {
 }
 
 func VmConfig(vmname string) vmConfigStruct {
-	var conf_vm_file, conf_vm_error = os.ReadFile("conf_vm.yaml")
-
-	if conf_vm_error != nil {
-		panic(conf_vm_error)
+	var datasetsList_var = datasetsList()
+	var conf_vm_file []byte
+	for index, dataset := range datasetsList_var.Datasets {
+		var _conf_vm_file, conf_vm_error = os.ReadFile(dataset.Mount_path + vmname + "/conf_vm.yaml")
+		if conf_vm_error == nil {
+			conf_vm_file = _conf_vm_file
+		} else if conf_vm_error != nil && index != len(datasetsList_var.Datasets) {
+			continue
+		} else {
+			panic("Can't find config file!")
+		}
 	}
 
 	var vmConfigStruct_var vmConfigStruct
