@@ -1,0 +1,30 @@
+install
+cdrom
+lang en_US.UTF-8
+keyboard us
+timezone UTC
+network --bootproto=dhcp
+rootpw --plaintext packer
+user --name=frank --password=Test123
+auth --enableshadow --passalgo=sha512 --kickstart
+firewall --disabled
+selinux --permissive
+bootloader --location=mbr
+
+text
+skipx
+zerombr
+
+clearpart --all --initlabel
+autopart
+
+firstboot --disable
+reboot
+
+%packages --instLangs=en_US.utf8 --nobase --ignoremissing --excludedocs
+@core
+%end
+
+%post --log=/root/ks.log
+# yum -y update
+%end

@@ -1,0 +1,66 @@
+{
+    "builders": [
+      {
+        "boot_command": [
+          "<up>e<down><down><end> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<leftCtrlOn>x<leftCtrlOff><wait>"
+        ],
+        "disk_size": "22000",
+        "guest_os_type": "RedHat_64",
+        "http_directory": "http",
+        "iso_checksum": "md5:{{ user `checksum` }}",
+        "iso_url": "{{ user `iso` }}",
+        "shutdown_command": "/sbin/halt -p",
+        "ssh_password": "packer",
+        "ssh_port": 22,
+        "ssh_timeout": "600s",
+        "ssh_username": "root",
+        "type": "virtualbox-iso",
+        "vboxmanage": [
+          [
+            "modifyvm",
+            "{{.Name}}",
+            "--memory",
+            "2048"
+          ],
+          [
+            "modifyvm",
+            "{{.Name}}",
+            "--cpus",
+            "4"
+          ],
+          [
+            "modifyvm",
+            "{{.Name}}",
+            "--audio",
+            "none"
+          ],
+          [
+            "modifyvm",
+            "{{.Name}}",
+            "--firmware",
+            "efi"
+          ]
+        ],
+        "vm_name": "Template-CentOS7-LVM",
+        "guest_additions_mode":"disable"
+      }
+    ],
+    "variables": {
+      "checksum": "5a3b0b3f4a6654ee195ec6edb6d938a4",
+      "iso": "/home/yaroslav/Downloads/OS_Images/CentOS-7-x86_64-DVD-2009.iso"
+    },
+    "provisioners": [
+        {
+            "type": "shell",
+            "scripts": [
+              "scripts/init.sh",
+              "scripts/cleanup.sh"
+            ],
+            "start_retry_timeout":"30s",
+            "max_retries":3,
+            "valid_exit_codes":[
+                127
+            ]
+        }
+    ]
+}
