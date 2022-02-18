@@ -14,9 +14,9 @@ import (
 )
 
 type storageStruct struct {
-	DiskSize  int
-	DiskFreeG int
-	DiskFreeP int
+	DiskSize        int
+	DiskFreeGig     int
+	DiskFreePercent int
 }
 
 type vmConfigStruct struct {
@@ -41,17 +41,14 @@ type vmConfigStruct struct {
 }
 
 func VmConfig(vmname string) vmConfigStruct {
-	var datasetsList_var = datasetsList()
 	var conf_vm_file []byte
-	for index, dataset := range datasetsList_var.Datasets {
-		var _conf_vm_file, conf_vm_error = os.ReadFile(dataset.Mount_path + vmname + "/conf_vm.yaml")
-		if conf_vm_error == nil {
-			conf_vm_file = _conf_vm_file
-		} else if conf_vm_error != nil && index != len(datasetsList_var.Datasets) {
-			continue
-		} else {
-			panic("Can't find config file!")
-		}
+	var vm_dataset = VmDatasetCheck(vmname)
+
+	var _conf_vm_file, conf_vm_error = os.ReadFile(vm_dataset.Mount_path + vmname + "/conf_vm.yaml")
+	if conf_vm_error == nil {
+		conf_vm_file = _conf_vm_file
+	} else {
+		panic("Can't find config file!")
 	}
 
 	var vmConfigStruct_var vmConfigStruct
@@ -247,4 +244,41 @@ func datasetsList() datasetsListStruct {
 	}
 
 	return datasetsList_var
+}
+
+type datasetStruct struct {
+	Name       string `yaml:"name"`
+	Mount_path string `yaml:"mount_path"`
+	Zfs_path   string `yaml:"zfs_path"`
+	Encrypted  bool   `yaml:"encrypted"`
+	Type       string `yaml:"type"`
+}
+
+func VmDatasetCheck(vmname string) datasetStruct {
+	var conf_datasets_file, conf_datasets_error = os.ReadFile("conf_datasets.yaml")
+
+	if conf_datasets_error != nil {
+		panic(conf_datasets_error)
+	}
+
+	var vm_dataset_list datasetsListStruct
+
+	err := yaml.Unmarshal([]byte(conf_datasets_file), &vm_dataset_list)
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
+	var vm_dataset datasetStruct
+	for _, dataset := range vm_dataset_list.Datasets {
+		folder_to_scan := dataset.Mount_path
+		_, vm_in_dataset_error := os.Stat(folder_to_scan + vmname)
+		if vm_in_dataset_error == nil {
+			vm_dataset.Name = dataset.Name
+			vm_dataset.Mount_path = dataset.Mount_path
+			vm_dataset.Zfs_path = dataset.Zfs_path
+			vm_dataset.Encrypted = dataset.Encrypted
+			vm_dataset.Type = dataset.Type
+		}
+	}
+	return vm_dataset
 }
