@@ -19,48 +19,6 @@ type storageStruct struct {
 	DiskFreePercent int
 }
 
-type vmConfigStruct struct {
-	Cpus        int    `yaml:"cpus"`
-	Ram         int    `yaml:"ram"`
-	VncPort     int    `yaml:"vnc_port"`
-	VncPassword string `yaml:"vnc_password"`
-	IpAddress   string `yaml:"ip_address"`
-	OsType      string `yaml:"os_type"`
-	ParentHost  string `yaml:"parent_host"`
-	Networks    []struct {
-		InterfaceName      string `yaml:"interface_name"`
-		InterfaceIpAddress string `yaml:"interface_ip_address"`
-	}
-	Storage []struct {
-		DiskName      string `yaml:"disk_name"`
-		DiskType      string `yaml:"disk_type"`
-		DiskDriveType string `yaml:"disk_drive_type"`
-		DiskFolder    string `yaml:"disk_folder"`
-		DiskImage     string `yaml:"disk_image"`
-	}
-}
-
-func VmConfig(vmname string) vmConfigStruct {
-	var conf_vm_file []byte
-	var vm_dataset = VmDatasetCheck(vmname)
-
-	var _conf_vm_file, conf_vm_error = os.ReadFile(vm_dataset.Mount_path + vmname + "/conf_vm.yaml")
-	if conf_vm_error == nil {
-		conf_vm_file = _conf_vm_file
-	} else {
-		panic("Can't find config file!")
-	}
-
-	var vmConfigStruct_var vmConfigStruct
-
-	err := yaml.Unmarshal([]byte(conf_vm_file), &vmConfigStruct_var)
-	if err != nil {
-		log.Fatalf("error: %v", err)
-	}
-
-	return vmConfigStruct_var
-}
-
 func main() {
 	var vm_list = vmList()
 
@@ -149,17 +107,6 @@ func vmList(plain ...bool) []string {
 
 	//Sort the VM list
 	natsort.Sort(vm_list)
-
-	//Form the list of dataset names
-	// for _, vm := range vm_list.vmName {
-	// 	for _, dataset := range datasetsList_var.Datasets {
-	// 		folder_to_scan = dataset.Mount_path
-	// 		var _, vm_in_dataset_error = os.Stat(folder_to_scan + vm)
-	// 		if vm_in_dataset_error == nil {
-	// 			vm_list.vmDataset = append(vm_list.vmDataset, dataset.Name)
-	// 		}
-	// 	}
-	// }
 
 	return vm_list
 }
@@ -270,4 +217,47 @@ func VmDatasetCheck(vmname string) datasetStruct {
 	}
 
 	return vm_dataset
+}
+
+//VM Config Section
+type vmConfigStruct struct {
+	Cpus        int    `yaml:"cpus"`
+	Ram         int    `yaml:"ram"`
+	VncPort     int    `yaml:"vnc_port"`
+	VncPassword string `yaml:"vnc_password"`
+	IpAddress   string `yaml:"ip_address"`
+	OsType      string `yaml:"os_type"`
+	ParentHost  string `yaml:"parent_host"`
+	Networks    []struct {
+		InterfaceName      string `yaml:"interface_name"`
+		InterfaceIpAddress string `yaml:"interface_ip_address"`
+	}
+	Storage []struct {
+		DiskName      string `yaml:"disk_name"`
+		DiskType      string `yaml:"disk_type"`
+		DiskDriveType string `yaml:"disk_drive_type"`
+		DiskFolder    string `yaml:"disk_folder"`
+		DiskImage     string `yaml:"disk_image"`
+	}
+}
+
+func VmConfig(vmname string) vmConfigStruct {
+	var conf_vm_file []byte
+	var vm_dataset = VmDatasetCheck(vmname)
+
+	var _conf_vm_file, conf_vm_error = os.ReadFile(vm_dataset.Mount_path + vmname + "/conf_vm.yaml")
+	if conf_vm_error == nil {
+		conf_vm_file = _conf_vm_file
+	} else {
+		panic("Can't find config file!")
+	}
+
+	var vmConfigStruct_var vmConfigStruct
+
+	err := yaml.Unmarshal([]byte(conf_vm_file), &vmConfigStruct_var)
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
+	return vmConfigStruct_var
 }
