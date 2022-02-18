@@ -77,22 +77,22 @@ func main() {
 	var vm_index int
 	var vm_misc string
 
-	for index, vm := range vm_list.vmName {
+	for index, vmname := range vm_list {
 		// OS Types hot replacement
-		vm_os_type = VmConfig(vm).OsType
+		vm_os_type = VmConfig(vmname).OsType
 		vm_os_type = strings.ReplaceAll(vm_os_type, "debian11", "Debian 11")
 		vm_os_type = strings.ReplaceAll(vm_os_type, "freebsd13ufs", "FreeBSD 13 UFS")
 
 		vm_index = index + 1
-		vm_status = vmStatusCheck(vm).vmStatusIcons
-		vm_dataset = vm_list.vmDataset[index]
-		vm_resources = "CPUs: " + strconv.Itoa(VmConfig(vm).Cpus) + "\nRAM: " + strconv.Itoa(VmConfig(vm).Ram) + "G"
-		vm_vnc = "Port: " + strconv.Itoa(VmConfig(vm).VncPort) + "\nPwd: " + VmConfig(vm).VncPassword
-		vm_networks = VmConfig(vm).Networks[0].InterfaceName + ": " + VmConfig(vm).Networks[0].InterfaceIpAddress
-		vm_misc = "OS: " + vm_os_type + "\nUptime: 00:00" + "\nParent: " + VmConfig(vm).ParentHost
+		vm_status = vmStatusCheck(vmname).vmStatusIcons
+		vm_dataset = VmDatasetCheck(vmname).Name
+		vm_resources = "CPUs: " + strconv.Itoa(VmConfig(vmname).Cpus) + "\nRAM: " + strconv.Itoa(VmConfig(vmname).Ram) + "G"
+		vm_vnc = "Port: " + strconv.Itoa(VmConfig(vmname).VncPort) + "\nPwd: " + VmConfig(vmname).VncPassword
+		vm_networks = VmConfig(vmname).Networks[0].InterfaceName + ": " + VmConfig(vmname).Networks[0].InterfaceIpAddress
+		vm_misc = "OS: " + vm_os_type + "\nUptime: 00:00" + "\nParent: " + VmConfig(vmname).ParentHost
 
 		//Storage
-		vm_disk_location := VmConfig(vm).Storage[0].DiskFolder + VmConfig(vm).Storage[0].DiskImage
+		vm_disk_location := VmConfig(vmname).Storage[0].DiskFolder + VmConfig(vmname).Storage[0].DiskImage
 		vm_storage_full_size, _ := os.Stat(vm_disk_location)
 		vm_storage_provisioned := vm_storage_full_size.Size()
 		vm_storage_provisioned = vm_storage_provisioned / 1024 / 1024 / 1024
@@ -101,11 +101,11 @@ func main() {
 		vm_storage_used_ := strings.ReplaceAll(string(out), "\n", "")
 		vm_storage_used, _ := strconv.Atoi(vm_storage_used_)
 		vm_storage_used = vm_storage_used / 1024 / 1024
-		vm_storage := VmConfig(vm).Storage[0].DiskName + ": " + strconv.Itoa(vm_storage_used) + "G/" + strconv.Itoa(int(vm_storage_provisioned)) + "G"
+		vm_storage := VmConfig(vmname).Storage[0].DiskName + ": " + strconv.Itoa(vm_storage_used) + "G/" + strconv.Itoa(int(vm_storage_provisioned)) + "G"
 
 		outputTable.AppendRow([]interface{}{
 			vm_index,
-			vm,
+			vmname,
 			vm_status,
 			vm_dataset,
 			vm_resources,
@@ -116,21 +116,17 @@ func main() {
 		outputTable.AppendSeparator()
 	}
 
-	var total_number_of_vms = strconv.Itoa(len(vm_list.vmName))
+	var total_number_of_vms = strconv.Itoa(len(vm_list))
 	outputTable.AppendFooter(table.Row{"", "total vms: " + total_number_of_vms})
 	outputTable.SetStyle(table.StyleLight)
 	outputTable.Render()
 }
 
-type vmListStruct struct {
-	vmName    []string
-	vmDataset []string
-}
-
-func vmList(plain ...bool) vmListStruct {
+func vmList(plain ...bool) []string {
 	var datasetsList_var = datasetsList()
 	var folder_to_scan string
-	var vm_list = vmListStruct{}
+	// var vm_list = vmListStruct{}
+	var vm_list []string
 
 	//Form VM list from all available datasets
 	for _, dataset := range datasetsList_var.Datasets {
@@ -146,29 +142,24 @@ func vmList(plain ...bool) vmListStruct {
 
 			var _, file_exists_error = os.Stat(vm_folder_full_path + "/conf_vm.yaml")
 			if file_exists_error == nil {
-				vm_list.vmName = append(vm_list.vmName, vm_folder_name)
+				vm_list = append(vm_list, vm_folder_name)
 			}
-
-			// var _, new_config_file_exists_error = os.Stat(vm_folder_full_path + "/vm.conf")
-			// if new_config_file_exists_error == nil {
-			// 	vm_list.vmName = append(vm_list.vmName, vm_folder_name)
-			// }
 		}
 	}
 
 	//Sort the VM list
-	natsort.Sort(vm_list.vmName)
+	natsort.Sort(vm_list)
 
 	//Form the list of dataset names
-	for _, vm := range vm_list.vmName {
-		for _, dataset := range datasetsList_var.Datasets {
-			folder_to_scan = dataset.Mount_path
-			var _, vm_in_dataset_error = os.Stat(folder_to_scan + vm)
-			if vm_in_dataset_error == nil {
-				vm_list.vmDataset = append(vm_list.vmDataset, dataset.Name)
-			}
-		}
-	}
+	// for _, vm := range vm_list.vmName {
+	// 	for _, dataset := range datasetsList_var.Datasets {
+	// 		folder_to_scan = dataset.Mount_path
+	// 		var _, vm_in_dataset_error = os.Stat(folder_to_scan + vm)
+	// 		if vm_in_dataset_error == nil {
+	// 			vm_list.vmDataset = append(vm_list.vmDataset, dataset.Name)
+	// 		}
+	// 	}
+	// }
 
 	return vm_list
 }
@@ -199,7 +190,6 @@ func vmStatusCheck(vmname string) vmStatusCheckStruct {
 	}
 
 	//VM encryption check
-	// var datasetsList_var = datasetsList()
 	var dataset = VmDatasetCheck(vmname)
 
 	if dataset.Encrypted {
@@ -209,25 +199,11 @@ func vmStatusCheck(vmname string) vmStatusCheckStruct {
 		vmStatusCheckStruct_var.vmEncrypted = false
 	}
 
-	// for index, dataset := range datasetsList_var.Datasets {
-	// 	var _, err = os.Stat(dataset.Mount_path + vmname)
-	// 	if err == nil {
-	// 		if dataset.Encrypted {
-	// 			vmStatusIcons = vmStatusIcons + vm_is_encrypted
-	// 			vmStatusCheckStruct_var.vmEncrypted = true
-	// 		}
-	// 	} else if err != nil && index != len(datasetsList_var.Datasets) {
-	// 		continue
-	// 	} else {
-	// 		vmStatusCheckStruct_var.vmEncrypted = false
-	// 		break
-	// 	}
-	// }
-
 	vmStatusCheckStruct_var.vmStatusIcons = vmStatusIcons
 	return vmStatusCheckStruct_var
 }
 
+//Dataset LIST section
 type datasetsListStruct struct {
 	Datasets []struct {
 		Name       string `yaml:"name"`
@@ -254,6 +230,8 @@ func datasetsList() datasetsListStruct {
 
 	return datasetsList_var
 }
+
+//SINGLE Dataset section
 
 type datasetStruct struct {
 	Name       string `yaml:"name"`
