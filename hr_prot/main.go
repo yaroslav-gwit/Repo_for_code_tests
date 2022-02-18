@@ -199,21 +199,30 @@ func vmStatusCheck(vmname string) vmStatusCheckStruct {
 	}
 
 	//VM encryption check
-	var datasetsList_var = datasetsList()
-	for index, dataset := range datasetsList_var.Datasets {
-		var _, err = os.Stat(dataset.Mount_path + vmname)
-		if err == nil {
-			if dataset.Encrypted {
-				vmStatusIcons = vmStatusIcons + vm_is_encrypted
-				vmStatusCheckStruct_var.vmEncrypted = true
-			}
-		} else if err != nil && index != len(datasetsList_var.Datasets) {
-			continue
-		} else {
-			vmStatusCheckStruct_var.vmEncrypted = false
-			break
-		}
+	// var datasetsList_var = datasetsList()
+	var dataset = VmDatasetCheck(vmname)
+
+	if dataset.Encrypted {
+		vmStatusIcons = vmStatusIcons + vm_is_encrypted
+		vmStatusCheckStruct_var.vmEncrypted = true
+	} else {
+		vmStatusCheckStruct_var.vmEncrypted = false
 	}
+
+	// for index, dataset := range datasetsList_var.Datasets {
+	// 	var _, err = os.Stat(dataset.Mount_path + vmname)
+	// 	if err == nil {
+	// 		if dataset.Encrypted {
+	// 			vmStatusIcons = vmStatusIcons + vm_is_encrypted
+	// 			vmStatusCheckStruct_var.vmEncrypted = true
+	// 		}
+	// 	} else if err != nil && index != len(datasetsList_var.Datasets) {
+	// 		continue
+	// 	} else {
+	// 		vmStatusCheckStruct_var.vmEncrypted = false
+	// 		break
+	// 	}
+	// }
 
 	vmStatusCheckStruct_var.vmStatusIcons = vmStatusIcons
 	return vmStatusCheckStruct_var
@@ -255,19 +264,20 @@ type datasetStruct struct {
 }
 
 func VmDatasetCheck(vmname string) datasetStruct {
+	//Load datasets list file
 	var conf_datasets_file, conf_datasets_error = os.ReadFile("conf_datasets.yaml")
-
 	if conf_datasets_error != nil {
 		panic(conf_datasets_error)
 	}
 
+	//Init and populate the variable for list of datasets
 	var vm_dataset_list datasetsListStruct
-
 	err := yaml.Unmarshal([]byte(conf_datasets_file), &vm_dataset_list)
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
 
+	//Iterate over the list of datasets and check where VM exists
 	var vm_dataset datasetStruct
 	for _, dataset := range vm_dataset_list.Datasets {
 		folder_to_scan := dataset.Mount_path
@@ -280,5 +290,6 @@ func VmDatasetCheck(vmname string) datasetStruct {
 			vm_dataset.Type = dataset.Type
 		}
 	}
+
 	return vm_dataset
 }
