@@ -294,7 +294,7 @@ func VmUptime(vmname string) string {
 			fmt.Println("\"" + item + "\"")
 		}
 		for _, item := range final_result_list {
-			if item != " " || item != "" {
+			if item != "" {
 				final_result = item
 				break
 			}
