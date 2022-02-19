@@ -34,6 +34,6 @@ func hostInfo() {
 	fmt.Printf("RAM: %dGB/%dGB\n", freeRam, totalRam)
 	//Uptime
 	hostUptime_, _ := host.Info()
-	hostUptime := hostUptime_.Uptime / 60
-	fmt.Printf("Uptime, minutes: %d", hostUptime)
+	hostUptime := hostUptime_.Uptime / 60 / 60
+	fmt.Printf("Uptime, hours: %d\n", hostUptime)
 }
