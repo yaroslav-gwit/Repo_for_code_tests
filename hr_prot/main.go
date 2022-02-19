@@ -267,9 +267,7 @@ func VmConfig(vmname string) vmConfigStruct {
 }
 
 func VmUptime(vmname string) string {
-	// cmd := "ps axwww -o etime,command > /tmp/bhyve_vms_uptime.txt"
-	// var _, _ = exec.Command("bash", "-c", cmd).Output()
-
+	//Check if "bhyve_vms_uptime.txt" exists, recreate if it has been modified more than 10 seconds ago
 	var file_stat, file_stat_error = os.Stat("/tmp/bhyve_vms_uptime.txt")
 	if file_stat_error != nil {
 		cmd := "ps axwww -o etime,command > /tmp/bhyve_vms_uptime.txt"
@@ -282,9 +280,11 @@ func VmUptime(vmname string) string {
 	}
 
 	var vm_uptime_file, _ = os.ReadFile("/tmp/bhyve_vms_uptime.txt")
-	blah := string(vm_uptime_file)
-	r, _ := regexp.Compile(".*bhyve: " + vmname)
-	result := r.FindString(blah)
+
+	search_string := string(vm_uptime_file)
+	regex_lookup, _ := regexp.Compile(".*bhyve: " + vmname)
+	result := regex_lookup.FindString(search_string)
+
 	var final_result string
 	if result == "" {
 		final_result = "OFFLINE"
@@ -297,5 +297,6 @@ func VmUptime(vmname string) string {
 			}
 		}
 	}
+
 	return final_result
 }
