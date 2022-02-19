@@ -266,9 +266,15 @@ func VmConfig(vmname string) vmConfigStruct {
 
 func VmUptime(vmname string) string {
 	cmd := "ps axwww -o etime,command > /tmp/bhyve_vms_uptime.txt"
-	var out, _ = exec.Command("bash", "-c", cmd).Output()
+	var _, _ = exec.Command("bash", "-c", cmd).Output()
 	// vm_storage_used_ := strings.ReplaceAll(string(out), "\n", "")
-	vm_storage_used_ := strings.Split(string(out), "\n")
-	fmt.Println(vm_storage_used_)
+
+	var vm_uptime_file, vm_uptime_error = os.ReadFile("/tmp/bhyve_vms_uptime.txt")
+	if vm_uptime_error != nil {
+		panic("Can't find config file!")
+	}
+
+	// vm_storage_used_ := strings.Split(string(out), "\n")
+	fmt.Println(vm_uptime_file)
 	return "asdf"
 }
