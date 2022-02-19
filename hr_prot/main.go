@@ -278,6 +278,13 @@ func VmUptime(vmname string) string {
 	// vm_storage_used_ := strings.Split(string(out), "\n")
 	blah := string(vm_uptime_file)
 	r, _ := regexp.Compile("bhyve: " + vmname)
-	fmt.Println(r.FindString(blah))
+	result := r.FindString(blah)
+	var final_result string
+	if result == "" {
+		final_result = "-"
+	} else {
+		final_result = result
+	}
+	fmt.Println(final_result)
 	return "asdf"
 }
