@@ -276,7 +276,7 @@ func VmUptime(vmname string) string {
 		exec.Command("bash", "-c", cmd).Output()
 	}
 	time_difference := time.Since(file_stat.ModTime())
-	if time_difference.Seconds() < 10 {
+	if time_difference.Seconds() > 10 {
 		cmd := "ps axwww -o etime,command > /tmp/bhyve_vms_uptime.txt"
 		exec.Command("bash", "-c", cmd).Output()
 	}
