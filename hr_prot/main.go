@@ -287,7 +287,7 @@ func VmUptime(vmname string) string {
 	result := r.FindString(blah)
 	var final_result string
 	if result == "" {
-		final_result = "-"
+		final_result = "OFFLINE"
 	} else {
 		final_result_list := strings.Split(result, " ")
 		for _, item := range final_result_list {
