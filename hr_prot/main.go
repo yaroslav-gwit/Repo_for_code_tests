@@ -276,6 +276,8 @@ func VmUptime(vmname string) string {
 
 	// vm_storage_used_ := strings.Split(string(out), "\n")
 	blah := strings.Split(string(vm_uptime_file), "\n")
-	fmt.Println(blah)
+	for index, item := range blah {
+		fmt.Println(index, "---->", item)
+	}
 	return "asdf"
 }
