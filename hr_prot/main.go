@@ -291,6 +291,6 @@ func VmUptime(vmname string) string {
 	} else {
 		final_result = strings.Split(result, " ")
 	}
-	fmt.Println(final_result[0])
+	fmt.Println(final_result)
 	return "asdf"
 }
