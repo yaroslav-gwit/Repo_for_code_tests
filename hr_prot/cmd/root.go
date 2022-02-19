@@ -14,7 +14,7 @@ var rootCmd = &cobra.Command{
 	Long: `HosterRed is a fast, CLI-based Bhyve config and VM manager written in Go`,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		// Do Stuff Here
+		cmd.Help()
 	},
 }
 
