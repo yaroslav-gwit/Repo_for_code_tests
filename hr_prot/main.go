@@ -267,8 +267,8 @@ func VmConfig(vmname string) vmConfigStruct {
 }
 
 func VmUptime(vmname string) string {
-	cmd := "ps axwww -o etime,command > /tmp/bhyve_vms_uptime.txt"
-	var _, _ = exec.Command("bash", "-c", cmd).Output()
+	// cmd := "ps axwww -o etime,command > /tmp/bhyve_vms_uptime.txt"
+	// var _, _ = exec.Command("bash", "-c", cmd).Output()
 
 	var file_stat, file_stat_error = os.Stat("/tmp/bhyve_vms_uptime.txt")
 	if file_stat_error != nil {
