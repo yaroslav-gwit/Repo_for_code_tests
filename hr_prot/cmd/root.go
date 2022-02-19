@@ -8,11 +8,11 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "hugo",
-	Short: "Hugo is a very fast static site generator",
-	Long: `A Fast and Flexible Static Site Generator built with
-				  love by spf13 and friends in Go.
-				  Complete documentation is available at http://hugo.spf13.com`,
+	Use:   "hoster",
+	Short: "HosterRed is a fast, CLI-based Bhyve config and VM manager written in Go",
+	Long: `HosterRed is a fast, CLI-based Bhyve
+				config and VM manager written in Go`,
+
 	Run: func(cmd *cobra.Command, args []string) {
 		// Do Stuff Here
 	},
