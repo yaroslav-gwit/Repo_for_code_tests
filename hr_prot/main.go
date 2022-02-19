@@ -9,6 +9,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/facette/natsort"
 	"github.com/jedib0t/go-pretty/v6/table"
@@ -268,14 +269,19 @@ func VmConfig(vmname string) vmConfigStruct {
 func VmUptime(vmname string) string {
 	cmd := "ps axwww -o etime,command > /tmp/bhyve_vms_uptime.txt"
 	var _, _ = exec.Command("bash", "-c", cmd).Output()
-	// vm_storage_used_ := strings.ReplaceAll(string(out), "\n", "")
 
-	var vm_uptime_file, vm_uptime_error = os.ReadFile("/tmp/bhyve_vms_uptime.txt")
-	if vm_uptime_error != nil {
-		panic("Can't find config file!")
+	var file_stat, file_stat_error = os.Stat("/tmp/bhyve_vms_uptime.txt")
+	if file_stat_error != nil {
+		cmd := "ps axwww -o etime,command > /tmp/bhyve_vms_uptime.txt"
+		exec.Command("bash", "-c", cmd).Output()
+	}
+	time_difference := time.Since(file_stat.ModTime())
+	if time_difference.Seconds() < 10 {
+		cmd := "ps axwww -o etime,command > /tmp/bhyve_vms_uptime.txt"
+		exec.Command("bash", "-c", cmd).Output()
 	}
 
-	// vm_storage_used_ := strings.Split(string(out), "\n")
+	var vm_uptime_file, _ = os.ReadFile("/tmp/bhyve_vms_uptime.txt")
 	blah := string(vm_uptime_file)
 	r, _ := regexp.Compile("bhyve: " + vmname)
 	result := r.FindString(blah)
