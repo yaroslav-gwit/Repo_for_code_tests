@@ -285,12 +285,12 @@ func VmUptime(vmname string) string {
 	blah := string(vm_uptime_file)
 	r, _ := regexp.Compile(".*bhyve: " + vmname)
 	result := r.FindString(blah)
-	var final_result string
+	var final_result []string
 	if result == "" {
-		final_result = "-"
+		final_result = append(final_result, "-")
 	} else {
-		final_result = result
+		final_result = strings.Split(result, " ")
 	}
-	fmt.Println(final_result)
+	fmt.Println(final_result[0])
 	return "asdf"
 }
