@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -18,29 +17,19 @@ import (
 )
 
 func init() {
-	rootCmd.AddCommand(vm_list_cmd)
+	rootCmd.AddCommand(vm_table_cmd)
 }
 
-var vm_list_cmd = &cobra.Command{
-	Use:   "vmlist",
+var vm_table_cmd = &cobra.Command{
+	Use:   "vmtable",
 	Short: "Show the table of VMs",
 	Long:  `Print out the table of VMs in the console`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// fmt.Println("This would be a table of VMs")
-		vm_list()
+		vmTablePrintout()
 	},
 }
 
-//____--------_____------_______-------
-
-type storageStruct struct {
-	DiskSize        int
-	DiskFreeGig     int
-	DiskFreePercent int
-}
-
-func vm_list() {
-	fmt.Println("VMs:")
+func vmTablePrintout() {
 	var vm_list = vmList()
 
 	var outputTable = table.NewWriter()
