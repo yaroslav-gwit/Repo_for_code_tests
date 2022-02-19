@@ -10,8 +10,8 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "hoster",
 	Short: "HosterRed is a fast, CLI-based Bhyve config and VM manager written in Go",
-	Long: `HosterRed is a fast, CLI-based Bhyve
-	config and VM manager written in Go`,
+	// This can be a multiline string!
+	Long: `HosterRed is a fast, CLI-based Bhyve	config and VM manager written in Go`,
 
 	Run: func(cmd *cobra.Command, args []string) {
 		// Do Stuff Here
