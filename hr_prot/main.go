@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -21,7 +22,6 @@ type storageStruct struct {
 }
 
 func main() {
-	VmUptime("vm")
 	var vm_list = vmList()
 
 	var outputTable = table.NewWriter()
@@ -38,6 +38,7 @@ func main() {
 	var vm_misc string
 
 	for index, vmname := range vm_list {
+		VmUptime(vmname)
 		// OS Types hot replacement
 		vm_os_type = VmConfig(vmname).OsType
 		vm_os_type = strings.ReplaceAll(vm_os_type, "debian11", "Debian 11")
@@ -276,8 +277,11 @@ func VmUptime(vmname string) string {
 
 	// vm_storage_used_ := strings.Split(string(out), "\n")
 	blah := strings.Split(string(vm_uptime_file), "\n")
-	for index, item := range blah {
-		fmt.Println(index, "---->", item)
+
+	for _, item := range blah {
+		match, _ := regexp.MatchString("bhyve: "+vmname, item)
+		// fmt.Println(index, "---->", item)
+		fmt.Println(match)
 	}
 	return "asdf"
 }
