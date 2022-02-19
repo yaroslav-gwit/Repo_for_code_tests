@@ -293,6 +293,7 @@ func VmUptime(vmname string) string {
 		for _, item := range final_result_list {
 			if item != " " {
 				final_result = item
+				break
 			}
 		}
 	}
