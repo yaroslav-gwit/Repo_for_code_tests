@@ -283,7 +283,7 @@ func VmUptime(vmname string) string {
 
 	var vm_uptime_file, _ = os.ReadFile("/tmp/bhyve_vms_uptime.txt")
 	blah := string(vm_uptime_file)
-	r, _ := regexp.Compile("bhyve: " + vmname)
+	r, _ := regexp.Compile("*.bhyve: " + vmname)
 	result := r.FindString(blah)
 	var final_result string
 	if result == "" {
