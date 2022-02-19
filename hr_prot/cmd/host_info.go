@@ -25,7 +25,7 @@ var hostinfoCmd = &cobra.Command{
 		vmStat, _ := mem.VirtualMemory()
 		freeRam := vmStat.Available / 1024 / 1024 / 1024
 		totalRam := vmStat.Total / 1024 / 1024 / 1024
-		fmt.Println("Free RAM:", freeRam, "GB")
-		fmt.Println("Overall RAM:", totalRam, "GB")
+		// fmt.Println("RAM:", freeRam, "GB", totalRam, "GB")
+		fmt.Printf("RAM: %dGB/%dGB", freeRam, totalRam)
 	},
 }
