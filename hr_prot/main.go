@@ -21,6 +21,7 @@ type storageStruct struct {
 }
 
 func main() {
+	VmUptime("vm")
 	var vm_list = vmList()
 
 	var outputTable = table.NewWriter()
