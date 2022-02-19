@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -260,4 +261,13 @@ func VmConfig(vmname string) vmConfigStruct {
 	}
 
 	return vmConfigStruct_var
+}
+
+func VmUptime(vmname string) string {
+	cmd := "ps axwww -o etime,command > /tmp/bhyve_vms_uptime.txt"
+	var out, _ = exec.Command("bash", "-c", cmd).Output()
+	// vm_storage_used_ := strings.ReplaceAll(string(out), "\n", "")
+	vm_storage_used_ := strings.Split(string(out), "\n")
+	fmt.Println(vm_storage_used_)
+	return "asdf"
 }
