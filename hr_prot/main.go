@@ -23,6 +23,7 @@ type storageStruct struct {
 }
 
 func main() {
+	fmt.Println("VMs:")
 	var vm_list = vmList()
 
 	var outputTable = table.NewWriter()
@@ -39,7 +40,6 @@ func main() {
 	var vm_misc string
 
 	for index, vmname := range vm_list {
-		VmUptime(vmname)
 		// OS Types hot replacement
 		vm_os_type = VmConfig(vmname).OsType
 		vm_os_type = strings.ReplaceAll(vm_os_type, "debian11", "Debian 11")
@@ -51,7 +51,7 @@ func main() {
 		vm_resources = "CPUs: " + strconv.Itoa(VmConfig(vmname).Cpus) + "\nRAM: " + strconv.Itoa(VmConfig(vmname).Ram) + "G"
 		vm_vnc = "Port: " + strconv.Itoa(VmConfig(vmname).VncPort) + "\nPwd: " + VmConfig(vmname).VncPassword
 		vm_networks = VmConfig(vmname).Networks[0].InterfaceName + ": " + VmConfig(vmname).Networks[0].InterfaceIpAddress
-		vm_misc = "OS: " + vm_os_type + "\nUptime: 00:00" + "\nParent: " + VmConfig(vmname).ParentHost
+		vm_misc = "OS: " + vm_os_type + "\nUptime: " + VmUptime(vmname) + "\nParent: " + VmConfig(vmname).ParentHost
 
 		//Storage
 		vm_disk_location := VmConfig(vmname).Storage[0].DiskFolder + VmConfig(vmname).Storage[0].DiskImage
@@ -292,6 +292,5 @@ func VmUptime(vmname string) string {
 	} else {
 		final_result = strings.Split(result, " ")
 	}
-	fmt.Println(final_result[1])
-	return "asdf"
+	return final_result[1]
 }
