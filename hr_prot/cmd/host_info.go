@@ -42,7 +42,7 @@ func hostInfoFunc() {
 	//Number of running VMs
 	fmt.Println("Running VMs:", runningVmsFunc())
 	//Arc Size
-	fmt.Println(zfsArcSizeFunc())
+	fmt.Println("The Arc Size is: " + zfsArcSizeFunc())
 }
 
 func hostUptimeFunc() string {
