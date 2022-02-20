@@ -33,7 +33,17 @@ func hostInfo() {
 	totalRam := vmStat.Total / 1024 / 1024 / 1024
 	fmt.Printf("RAM: %dGB/%dGB\n", freeRam, totalRam)
 	//Uptime
+	hostUptime := hostUptimeFunc()
+	fmt.Println(hostUptime)
+}
+
+func hostUptimeFunc() string {
 	hostUptime_, _ := host.Info()
-	hostUptime := hostUptime_.Uptime / 60 / 60
-	fmt.Printf("Uptime, hours: %d\n", hostUptime)
+	hostUptime := hostUptime_.Uptime
+	// seconds := hostUptime % 60
+	minutes := (hostUptime / 60) % 60
+	hours := (hostUptime / 60 / 60) % 24
+	days := hostUptime / 60 / 60 / 24
+	// fmt.Printf("Uptime: %d days %d hours %d minutes", days, hours, minutes)
+	return fmt.Sprintf("Uptime: %d days %d hours %d minutes", days, hours, minutes)
 }
