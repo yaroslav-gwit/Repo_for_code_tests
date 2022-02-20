@@ -55,9 +55,10 @@ func runningVmsFunc() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	// var live_vms_list []string
-	// for _, vm := range vms {
-	// 	live_vms_list = append(live_vms_list, string(vm))
-	// }
-	print(vms)
+	var live_vms_list []string
+	for _, vm := range vms {
+		this_vm := vm.Name()
+		live_vms_list = append(live_vms_list, this_vm)
+	}
+	print(live_vms_list)
 }
