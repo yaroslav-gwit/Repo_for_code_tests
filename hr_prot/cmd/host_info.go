@@ -46,7 +46,7 @@ func hostInfoFunc() {
 	//Zfs Status
 	fmt.Println("Zfs status: " + zfsStatusFunc())
 	//Dataset free
-	fmt.Println("Dataset free space: " + datasetFreeSpaceFunc())
+	// fmt.Println("Dataset free space: " + datasetFreeSpaceFunc())
 }
 
 func hostUptimeFunc() string {
@@ -113,16 +113,23 @@ func zfsStatusFunc() string {
 	return final_output
 }
 
-func datasetFreeSpaceFunc() string {
-	command := "zfs list -o space zroot/vm-unencrypted | tail -n +2 | awk '{ print $2  }'"
-	command_output, command_error := exec.Command("bash", "-c", command).Output()
+// type datasetFreeSpaceStruct []struct {
+// 	Dataset_name string
+// 	Dataset_free_space string
+// }
 
-	if command_error != nil {
-		panic(command_error)
-	}
+// func datasetFreeSpaceFunc() datasetFreeSpaceStruct {
+// 	datasets := &datasetFreeSpaceStruct{}
 
-	fmt.Println(DatasetsList().Datasets)
+// 	for _, dataset := range DatasetsList().Datasets {
+// 		command := "zfs list -o space " + dataset.Zfs_path + " | tail -n +2 | awk '{ print $2 }'"
+// 		command_output, command_error := exec.Command("bash", "-c", command).Output()
+// 		if command_error != nil {
+// 			panic(command_error)
+// 		}
+// 		output := strings.ReplaceAll(string(command_output), "\n", "")
+// 		datasets = append(, dataset.Name, output)
+// 	}
 
-	final_output := strings.ReplaceAll(string(command_output), "\n", "")
-	return final_output
-}
+// 	return final_output
+// }
