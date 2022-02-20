@@ -32,18 +32,14 @@ var vm_table_cmd = &cobra.Command{
 func vmTablePrintout() {
 	var vm_list = vmList()
 
+	//Initialise Table Header
 	var outputTable = table.NewWriter()
 	outputTable.SetOutputMirror(os.Stdout)
 	outputTable.AppendHeader(table.Row{"#", "vm name", "status", "dataset", "resources", "vnc", "networks", "storage", "misc"})
 
-	var vm_status string
-	var vm_dataset string
-	var vm_resources string
-	var vm_vnc string
-	var vm_networks string
-	var vm_os_type string
+	//Initialise Table Values
+	var vm_status, vm_dataset, vm_resources, vm_vnc, vm_networks, vm_os_type, vm_misc string
 	var vm_index int
-	var vm_misc string
 
 	for index, vmname := range vm_list {
 		// OS Types hot replacement
