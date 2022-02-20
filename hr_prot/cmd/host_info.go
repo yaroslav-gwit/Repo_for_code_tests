@@ -37,7 +37,8 @@ func hostInfoFunc() {
 	//Uptime
 	hostUptime := hostUptimeFunc()
 	fmt.Println(hostUptime)
-	fmt.Println(runningVmsFunc())
+	//Number of running VMs
+	fmt.Println("Running VMs:", runningVmsFunc())
 }
 
 func hostUptimeFunc() string {
