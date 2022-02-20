@@ -37,7 +37,7 @@ func hostInfoFunc() {
 	//Uptime
 	hostUptime := hostUptimeFunc()
 	fmt.Println(hostUptime)
-	runningVmsFunc()
+	fmt.Println(runningVmsFunc())
 }
 
 func hostUptimeFunc() string {
@@ -50,7 +50,7 @@ func hostUptimeFunc() string {
 	return fmt.Sprintf("Uptime: %d days %d hours %d minutes", days, hours, minutes)
 }
 
-func runningVmsFunc() {
+func runningVmsFunc() int {
 	vms, err := ioutil.ReadDir("/dev/vmm/")
 	if err != nil {
 		log.Fatal(err)
@@ -60,5 +60,5 @@ func runningVmsFunc() {
 		this_vm := vm.Name()
 		live_vms_list = append(live_vms_list, this_vm)
 	}
-	print(live_vms_list)
+	return len(live_vms_list)
 }
