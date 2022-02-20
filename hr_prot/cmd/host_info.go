@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"os/exec"
 
 	"github.com/shirou/gopsutil/host"
 	"github.com/shirou/gopsutil/mem"
@@ -39,6 +40,8 @@ func hostInfoFunc() {
 	fmt.Println(hostUptime)
 	//Number of running VMs
 	fmt.Println("Running VMs:", runningVmsFunc())
+	//Arc Size
+	fmt.Println(zfsArcSizeFunc())
 }
 
 func hostUptimeFunc() string {
@@ -62,4 +65,15 @@ func runningVmsFunc() int {
 		live_vms_list = append(live_vms_list, this_vm)
 	}
 	return len(live_vms_list)
+}
+
+func zfsArcSizeFunc() string {
+	command := "top -n | grep ARC | awk '{print $2}'"
+	command_output, command_error := exec.Command("bash", "-c", command).Output()
+
+	if command_error != nil {
+		panic(command_error)
+	}
+
+	return string(command_output)
 }
