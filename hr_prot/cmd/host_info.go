@@ -43,6 +43,8 @@ func hostInfoFunc() {
 	fmt.Println("Running VMs:", runningVmsFunc())
 	//Arc Size
 	fmt.Println("The Arc Size is: " + zfsArcSizeFunc())
+	//Zfs Status
+	fmt.Println("Zfs status: " + zfsStatusFunc())
 }
 
 func hostUptimeFunc() string {
@@ -77,5 +79,33 @@ func zfsArcSizeFunc() string {
 	}
 
 	final_output := strings.ReplaceAll(string(command_output), "\n", "")
+	return final_output
+}
+
+func zfsStatusFunc() string {
+	command := "zpool status | grep state | awk '{ print $2  }'"
+	command_output, command_error := exec.Command("bash", "-c", command).Output()
+
+	if command_error != nil {
+		panic(command_error)
+	}
+
+	command_output_list_ := strings.Split(string(command_output), "\n")
+	var command_output_list []string
+	for _, item := range command_output_list_ {
+		if item != "" {
+			command_output_list = append(command_output_list, item)
+		}
+	}
+
+	var final_output string
+	for _, item := range command_output_list {
+		if item != "ONLINE" {
+			final_output = "Online"
+		} else {
+			final_output = "At risk!"
+		}
+	}
+
 	return final_output
 }
