@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
+	"log"
 	"os"
 
 	"github.com/shirou/gopsutil/host"
@@ -18,11 +20,11 @@ var hostinfoCmd = &cobra.Command{
 	Short: "Show the host information",
 	Long:  `Show the host information in the form of table or json output`,
 	Run: func(cmd *cobra.Command, args []string) {
-		hostInfo()
+		hostInfoFunc()
 	},
 }
 
-func hostInfo() {
+func hostInfoFunc() {
 	fmt.Println("This will be a host info!")
 	// Hostname
 	hostname, _ := os.Hostname()
@@ -35,6 +37,7 @@ func hostInfo() {
 	//Uptime
 	hostUptime := hostUptimeFunc()
 	fmt.Println(hostUptime)
+	runningVmsFunc()
 }
 
 func hostUptimeFunc() string {
@@ -44,6 +47,17 @@ func hostUptimeFunc() string {
 	minutes := (hostUptime / 60) % 60
 	hours := (hostUptime / 60 / 60) % 24
 	days := hostUptime / 60 / 60 / 24
-	// fmt.Printf("Uptime: %d days %d hours %d minutes", days, hours, minutes)
 	return fmt.Sprintf("Uptime: %d days %d hours %d minutes", days, hours, minutes)
+}
+
+func runningVmsFunc() {
+	vms, err := ioutil.ReadDir("/dev/vmm/")
+	if err != nil {
+		log.Fatal(err)
+	}
+	// var live_vms_list []string
+	// for _, vm := range vms {
+	// 	live_vms_list = append(live_vms_list, string(vm))
+	// }
+	print(vms)
 }
