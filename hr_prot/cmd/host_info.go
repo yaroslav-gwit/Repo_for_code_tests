@@ -100,10 +100,11 @@ func zfsStatusFunc() string {
 
 	var final_output string
 	for _, item := range command_output_list {
-		if item != "ONLINE" {
+		if item == "ONLINE" {
 			final_output = "Online"
 		} else {
 			final_output = "At risk!"
+			break
 		}
 	}
 
