@@ -87,7 +87,7 @@ func vmTablePrintout() {
 }
 
 func vmList(plain ...bool) []string {
-	var datasetsList_var = datasetsList()
+	var datasetsList_var = DatasetsList()
 	var folder_to_scan string
 	// var vm_list = vmListStruct{}
 	var vm_list []string
@@ -157,7 +157,7 @@ func vmStatusCheck(vmname string) vmStatusCheckStruct {
 }
 
 //Dataset LIST section
-type datasetsListStruct struct {
+type DatasetsListStruct struct {
 	Datasets []struct {
 		Name       string `yaml:"name"`
 		Mount_path string `yaml:"mount_path"`
@@ -167,14 +167,14 @@ type datasetsListStruct struct {
 	}
 }
 
-func datasetsList() datasetsListStruct {
+func DatasetsList() DatasetsListStruct {
 	var conf_datasets_file, conf_datasets_error = os.ReadFile("conf_datasets.yaml")
 
 	if conf_datasets_error != nil {
 		panic(conf_datasets_error)
 	}
 
-	var datasetsList_var datasetsListStruct
+	var datasetsList_var DatasetsListStruct
 
 	err := yaml.Unmarshal([]byte(conf_datasets_file), &datasetsList_var)
 	if err != nil {
@@ -202,7 +202,7 @@ func VmDatasetCheck(vmname string) datasetStruct {
 	}
 
 	//Init and populate the variable for list of datasets
-	var vm_dataset_list datasetsListStruct
+	var vm_dataset_list DatasetsListStruct
 	err := yaml.Unmarshal([]byte(conf_datasets_file), &vm_dataset_list)
 	if err != nil {
 		log.Fatalf("error: %v", err)

@@ -121,6 +121,8 @@ func datasetFreeSpaceFunc() string {
 		panic(command_error)
 	}
 
+	fmt.Println(DatasetsList().Datasets)
+
 	final_output := strings.ReplaceAll(string(command_output), "\n", "")
 	return final_output
 }
