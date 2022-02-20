@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strings"
 
 	"github.com/shirou/gopsutil/host"
 	"github.com/shirou/gopsutil/mem"
@@ -75,5 +76,6 @@ func zfsArcSizeFunc() string {
 		panic(command_error)
 	}
 
-	return string(command_output)
+	final_output := strings.ReplaceAll(string(command_output), "\n", "")
+	return final_output
 }
