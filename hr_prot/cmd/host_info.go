@@ -114,7 +114,7 @@ func zfsStatusFunc() string {
 }
 
 func datasetFreeSpaceFunc() string {
-	command := "zfs list -o space zroot/vm-unencrypted | tail -n +2"
+	command := "zfs list -o space zroot/vm-unencrypted | tail -n +2 | awk '{ print $2  }'"
 	command_output, command_error := exec.Command("bash", "-c", command).Output()
 
 	if command_error != nil {
