@@ -1,46 +1,33 @@
 sites:
-- site_name: xgateway-it.com
+- site_name: promenergia.com.ua
   active: true
   cert_type: certbot
-  www_redirection: false
+  www_redirection: true
   use_x_realip: false
   owner: Yaroslav
   backend_servers:
-  - backend_server_address: 192.168.1.1:443
-    backend_server_http2: true
-    backend_server_https: false
-  - backend_server_address: 192.168.2.1:443
-    backend_server_http2: true
-    backend_server_https: false
-- site_name: ygateway-it.com
-  active: true
-  cert_type: certbot
-  www_redirection: false
-  use_x_realip: false
-  owner: Yaroslav
-  backend_servers:
-  - backend_server_address: 192.168.1.1:443
+  - backend_server_address: 10.0.6.2:443
     backend_server_http2: true
     backend_server_https: true
-  - backend_server_address: 192.168.2.1:443
-    backend_server_http2: true
-    backend_server_https: true
-- site_name: gateway-it.com
+
+- site_name: video.spinedango.com
   active: true
   cert_type: certbot
   www_redirection: false
   use_x_realip: false
   owner: Yaroslav
   backend_servers:
-  - backend_server_address: 192.168.1.1:443
-    backend_server_http2: false
-    backend_server_https: false
-- site_name: zgateway-it.com
+  - backend_server_address: 10.0.6.3:443
+    backend_server_http2: true
+    backend_server_https: true
+
+- site_name: allliance.ru
   active: true
   cert_type: certbot
-  www_redirection: false
+  www_redirection: true
   use_x_realip: false
+  owner: Yaroslav
   backend_servers:
-  - backend_server_address: 192.168.1.1:443
-    backend_server_http2: false
-    backend_server_https: false
+  - backend_server_address: 10.0.6.4:443
+    backend_server_http2: true
+    backend_server_https: true
